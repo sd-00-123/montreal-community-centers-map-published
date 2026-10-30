@@ -210,7 +210,7 @@ function addBoroughControl() {
 }
 
 // MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
-fetch('../data/mtl_bound.geojson')
+fetch('../mtl_bound.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
@@ -307,21 +307,22 @@ legend.addTo(map);
 // STOPS DATA: shows all MTL bus stop locations
 // Request both transit GeoJSON files from the data folder.
 Promise.all([
-  fetch('../data/stops_clean_output.geojson'),
-  fetch('../data/shapes_clean_output.geojson')
+  fetch('../stops_clean_output.geojson'),
+  fetch('../shapes_clean_output.geojson')
 ])
   .then(function (responses) {
-    responses.forEach(function (response) {
-      if (!response.ok) {
-        throw new Error(
-          'HTTP ' + response.status + ' loading transit data'
-        );
-      }
-    });
+    if (!responses[0].ok) {
+      throw new Error(
+        'HTTP ' + responses[0].status + ' loading stops_clean_output.geojson'
+      );
+    }
 
     return Promise.all([
       responses[0].json(),
-      responses[1].json()
+      responses[1].ok ? responses[1].json() : Promise.resolve({
+        type: 'FeatureCollection',
+        features: []
+      })
     ]);
   })
   .then(function (datasets) {
@@ -431,7 +432,7 @@ Promise.all([
 //-------------------------------------------
 // MONTREAL PLACES DATA: shows POI in Montreal
 
-fetch('../data/mtl_places_clean_output.geojson')
+fetch('../mtl_places_clean_output.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
