@@ -210,7 +210,7 @@ function addBoroughControl() {
 }
 
 // MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
-fetch('../data/mtl_bound.geojson')
+fetch('../mtl_bound.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
@@ -305,10 +305,10 @@ legend.addTo(map);
 
 
 // STOPS DATA: shows all MTL bus stop locations
-// Request both transit GeoJSON files from the data folder.
+// Request the stops GeoJSON and route-point CSV from the repository root.
 Promise.all([
-  fetch('../data/stops_clean_output.geojson'),
-  fetch('../data/shapes_clean_output.geojson')
+  fetch('../stops_clean_output.geojson'),
+  fetch('../shapes.csv')
 ])
   .then(function (responses) {
     responses.forEach(function (response) {
@@ -321,12 +321,35 @@ Promise.all([
 
     return Promise.all([
       responses[0].json(),
-      responses[1].json()
+      responses[1].text()
     ]);
   })
   .then(function (datasets) {
     const stopsData = datasets[0];
-    const shapesData = datasets[1];
+    const shapeRows = datasets[1].trim().split(/\r?\n/);
+    const shapeHeaders = shapeRows.shift().split(',');
+    const shapesData = {
+      features: shapeRows.filter(Boolean).map(function (row) {
+        const values = row.split(',');
+        const properties = {};
+
+        shapeHeaders.forEach(function (header, index) {
+          properties[header] = values[index];
+        });
+
+        return {
+          type: 'Feature',
+          properties: properties,
+          geometry: {
+            type: 'Point',
+            coordinates: [
+              Number(properties.shape_pt_lon),
+              Number(properties.shape_pt_lat)
+            ]
+          }
+        };
+      })
+    };
 
     // Limit the features that will be displayed.
     const shown = {
@@ -431,7 +454,7 @@ Promise.all([
 //-------------------------------------------
 // MONTREAL PLACES DATA: shows POI in Montreal
 
-fetch('../data/mtl_places_clean_output.geojson')
+fetch('../mtl_places_clean_output.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
