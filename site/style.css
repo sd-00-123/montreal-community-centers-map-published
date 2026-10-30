@@ -1,0 +1,93 @@
+/* PRESENTATION: how the page looks. */
+body { margin: 0; font-family: Arial, Helvetica, sans-serif; }
+header { padding: 10px 16px; background: #1F2D5A; color: #fff; }
+header h1 { margin: 0; font-size: 20px; }
+header p { margin: 4px 0 0; font-size: 14px; color: #DCBD23; }
+#map { height: calc(100vh - 62px); }
+.legend { background: #fff; padding: 6px 10px; border-radius: 6px; line-height: 1.6; font-size: 13px; }
+.legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+
+
+
+:root {
+  --accent: #159aed;   /* one colour, used everywhere */
+  --text: #1b1f2a;
+}
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0;
+}
+h1, h2 { color: var(--accent); }
+.story { max-width: 1100px; margin: 0 auto; padding: 16px; }
+
+.page {
+  display: grid;
+  grid-template-columns: 1fr 2fr;   /* story column, then a wider map */
+  gap: 24px;
+}
+@media (max-width: 800px) {
+  .page { grid-template-columns: 1fr; }   /* one column on a phone */
+}
+
+h1, h2 { color: var(--accent); line-height: 1.2; }
+h1 { font-size: 30px; margin-top: 0; }
+h2 { font-size: 20px; margin-top: 28px; }
+.lede { font-size: 19px; }
+#status { color: var(--muted); font-size: 15px; }
+a { color: var(--accent); }
+#map {
+  height: 800px;   /* without a height, the map is invisible */
+  border-radius: 8px;
+}
+@media (max-width: 800px) {
+  .page { grid-template-columns: 1fr; }   /* one column on a phone: story, then map */
+  #map { height: 70vh; position: static; }
+}
+.legend { background: #fff; padding: 6px 10px; border-radius: 6px; line-height: 1.6; font-size: 14px; }
+.legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+.legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; }
+.place-marker {
+  background: transparent;
+  border: 0;
+}
+.place-marker span {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.category-cluster {
+  background: transparent;
+  border: 0;
+  box-sizing: border-box;
+}
+.category-cluster span {
+  display: block;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.borough-control {
+  background: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.35);
+}
+.borough-control label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.borough-control select {
+  max-width: 220px;
+  padding: 4px;
+  font-size: 13px;
+}

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>[Elderly Community Centers in Montreal]</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <main class="story">
+      <h1>Map of Montreal Elderly Community and Recreation Centers</h1>
+      <p id="map-description" class="visually-hidden">
+        <strong> Map Function:</strong> Map of Montreal showing elderly community and recreation
+        places, bus stops, and transit routes. Use the map controls to zoom
+        and move around the map. Select a point or route to view more details.
+      </p>
+      <p class="lede">Enables seniors to access community resources and 
+        services in Montreal through a visual platform.</p>
+      <p><strong>This map is for</strong> The elderly, 
+        their loved ones helping them find the information they need, 
+        workers / 
+        voluteers at recreational / 
+        community centers, and anyone else needing this map for 
+        visual representation of centers.</p>
+      <p><strong>What you can do here:</strong> Use the map to identify the location of 
+        recreation and community centers and plan transit to these locations accordingly. 
+        With this map, you can easily find the nearest centers and plan your route. 
+        This helps ensure that seniors can access the resources and services they need.
+        Having all the information is in one place, it's easier to find and use.</p>
+      <p id="status">Loading map...</p>
+
+      <section>
+
+        <h2><strong>In this iteration:</strong> I will not be adding more detailed 
+          information on eg: transit times, google map api, or other scrape data for  
+        real-time updates. This map is a basic version, with cleaned data and organised for bare minimum use.</h2>
+        <p>Future versions will hopefully include more detailed information about each 
+          Center, such as senior age ranges at comunity centers, and condition.</p>
+      </section> 
+      <section>
+        <h2>Where this comes from</h2>
+        <ul>
+          <li><a href="[https://www.stm.info/en/about/developers]">stops.csv, shapes.csv</a>, [stm developers], [open transit licence], accessed [04/10/2026]. [took a few select data sets from the zip file that I wanted to map.]</li>
+        </ul>
+      </section>
+      <!-- <p id="map-description" class="visually-hidden">
+        Interactive map of Montreal showing elderly community and recreation
+        places, bus stops, and transit routes. Use the map controls to zoom
+        and move around the map. Select a point or route to view more details.
+      </p> -->
+    </main>
+    <div id="map" role="region" aria-label="Map of elderly community and recreation centers"
+      aria-describedby="map-description" tabindex="0"></div>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
