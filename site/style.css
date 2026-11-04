@@ -94,11 +94,11 @@ a { color: var(--accent); }
   height: 800px;   /* without a height, the map is invisible */
   border-radius: 8px;
 }
-@media (max-width: 800px) {
+@media (max-width: 375px) {
   .page { grid-template-columns: 1fr; }   /* one column on a phone: story, then map */
   #map { height: 70vh; position: static; }
 }
-@media (max-width: 700px) {
+@media (max-width: 500x) {
   .page { display: flex; flex-direction: column; }
   #map { height: 60vh; order: 1; }
   .story { order: 2; }
@@ -147,4 +147,39 @@ a { color: var(--accent); }
   max-width: 220px;
   padding: 4px;
   font-size: 13px;
+}
+.filter-panel {
+  margin: 20px 0;
+  padding: 12px;
+  border: 1px solid #d8dce8;
+  border-radius: 6px;
+}
+.filter-panel h2 {
+  margin: 0 0 10px;
+}
+.filter-panel .borough-control {
+  padding: 0;
+  box-shadow: none;
+}
+.installation-filter {
+  border: 0;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.installation-filter legend {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.installation-filter label {
+  display: block;
+  font-size: 15px;
+  margin: 3px 0;
+}
+
+/* on a narrow screen the panel goes below the map instead of squeezing it to nothing. */
+@media (max-width: 700px) {
+  main { flex-direction: column; height: auto; }
+  #map { flex: none; height: 60vh; order: 1; }
+  #panel { width: auto; order: 2; border-right: 0; border-top: 3px solid #DCBD23; }
+  header p { font-size: 12px; }
 }

@@ -40,6 +40,30 @@
           autocomplete="off">
         <p id="place-count" aria-live="polite"></p>
       </div>
+      <section class="filter-panel" aria-labelledby="filter-heading">
+        <h2 id="filter-heading">Map filters</h2>
+        <div class="borough-control">
+          <label for="borough-select">Filter and zoom to borough</label>
+          <select id="borough-select">
+            <option value="">All boroughs</option>
+          </select>
+        </div>
+        <fieldset class="installation-filter">
+          <legend>Installation type</legend>
+          <label>
+            <input type="checkbox" data-category="Parks and gardens" checked>
+            Parks and gardens
+          </label>
+          <label>
+            <input type="checkbox" data-category="Sports and recreation" checked>
+            Sports and recreation
+          </label>
+          <label>
+            <input type="checkbox" data-category="Arts, culture and community" checked>
+            Community centres
+          </label>
+        </fieldset>
+      </section>
       <p id="center"></p>
       <p id="status">Loading map...</p>
 

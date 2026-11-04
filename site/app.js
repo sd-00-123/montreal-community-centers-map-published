@@ -535,40 +535,40 @@ function zoomToBorough(borough) {
   }
 }
 
-function addBoroughControl() {
-  const control = L.control({ position: 'topright' });
+function setupBoroughFilter() {
+  const select = document.getElementById('borough-select');
+  if (!select) {
+    return;
+  }
 
-  control.onAdd = function () {
-    const container = L.DomUtil.create('div', 'borough-control');
-    const label = L.DomUtil.create('label', '', container);
-    const select = L.DomUtil.create('select', '', container);
+  boroughFeatures.forEach(function (feature) {
+    const option = document.createElement('option');
+    option.value = feature.properties.NOM;
+    option.textContent = feature.properties.NOM;
+    select.appendChild(option);
+  });
 
-    label.htmlFor = 'borough-select';
-    label.textContent = 'Filter and zoom to borough';
-    select.id = 'borough-select';
+  select.addEventListener('change', function (event) {
+    selectedBorough = event.target.value;
+    renderPlaceLayers();
+    updatePlaceCount();
+    zoomToBorough(selectedBorough);
+  });
+}
 
-    const allOption = L.DomUtil.create('option', '', select);
-    allOption.value = '';
-    allOption.textContent = 'All boroughs';
+function setupInstallationFilters() {
+  document.querySelectorAll('[data-category]').forEach(function (checkbox) {
+    checkbox.addEventListener('change', function (event) {
+      const category = event.target.dataset.category;
+      const layer = placeCategories[category];
 
-    boroughFeatures.forEach(function (feature) {
-      const option = L.DomUtil.create('option', '', select);
-      option.value = feature.properties.NOM;
-      option.textContent = feature.properties.NOM;
+      if (event.target.checked) {
+        layer.addTo(map);
+      } else {
+        map.removeLayer(layer);
+      }
     });
-
-    L.DomEvent.disableClickPropagation(container);
-    L.DomEvent.on(select, 'change', function (event) {
-      selectedBorough = event.target.value;
-      renderPlaceLayers();
-      updatePlaceCount();
-      zoomToBorough(selectedBorough);
-    });
-
-    return container;
-  };
-
-  control.addTo(map);
+  });
 }
 
 // MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
@@ -622,7 +622,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
 
     boroughLayer.addTo(map);
 
-    addBoroughControl();
+    setupBoroughFilter();
   })
   .catch(function (err) {
     document.getElementById('status').textContent +=
@@ -851,26 +851,20 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
       'Arts, culture and community': communityCentresLayer
     };
 
+    setupInstallationFilters();
+
     Object.keys(placeCategories).forEach(function (category) {
-      placeCategories[category].addTo(map);
+      const checkbox = document.querySelector(
+        '[data-category="' + category + '"]'
+      );
+      if (checkbox && checkbox.checked) {
+        placeCategories[category].addTo(map);
+      }
     });
 
     map.on('zoomend', updatePlacePointSizes);
     renderPlaceLayers();
     updatePlaceCount();
-
-    L.control.layers(
-      { 'Streets': streets },
-      {
-        'Parks and gardens': parksLayer,
-        'Sports and recreation': sportsLayer,
-        'Community centres': communityCentresLayer
-      },
-      {
-        collapsed: false,
-        position: 'topleft'
-      }
-    ).addTo(map);
 
     document.getElementById('status').textContent =
       placesData.features.length + ' of ' + data.features.length + ' places shown';
