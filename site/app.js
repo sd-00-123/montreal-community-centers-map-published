@@ -111,7 +111,53 @@ function assessWeather(current) {
   };
 }
 
+function pointInRing(point, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const intersects = ((ring[i][1] > point.lat) !== (ring[j][1] > point.lat)) &&
+      point.lng < (ring[j][0] - ring[i][0]) *
+      (point.lat - ring[i][1]) / (ring[j][1] - ring[i][1]) + ring[i][0];
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
+function pointInPolygon(point, polygon) {
+  if (!pointInRing(point, polygon[0])) {
+    return false;
+  }
+
+  return !polygon.slice(1).some(function (hole) {
+    return pointInRing(point, hole);
+  });
+}
+
+function isOnMontrealIsland(latlng) {
+  return boroughFeatures.some(function (feature) {
+    const geometry = feature.geometry;
+    if (geometry.type === 'Polygon') {
+      return pointInPolygon(latlng, geometry.coordinates);
+    }
+    if (geometry.type === 'MultiPolygon') {
+      return geometry.coordinates.some(function (polygon) {
+        return pointInPolygon(latlng, polygon);
+      });
+    }
+    return false;
+  });
+}
+
 function showWeatherPopup(latlng, placeName) {
+  if (!isOnMontrealIsland(latlng)) {
+    L.popup()
+      .setLatLng(latlng)
+      .setContent('Weather is available only on Montreal Island.')
+      .openOn(map);
+    return;
+  }
+
   const place = {
     name: placeName || 'selected map location',
     lat: latlng.lat,

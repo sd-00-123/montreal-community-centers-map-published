@@ -15,11 +15,12 @@ Test 1. I [click any point on the map].
 
 Test 2. I [click on an actual data point on the map].
     Expected: [see live weather data for the clicked data point].
-  Passed:
-Test 3. I [the user clickes outide of Montreal].
-  Expected: [If availble allow weather data outside Montreal, as long as no error occurs.]
-Passed a weather pop up appeared in 3 seconds after a click event and did not break the console / return red error messages
+  Passed: I see the live weather pop up in an actually data point.
 
+Test 3. I [the user clickes outide of Montreal].
+  Expected: [show a message that weather is available only on Montreal Island, without calling the weather API.]
+Passed: a message appeared and no weather API request was made.
+-------------------------------------------
 
 Another Feature Test: TO BE TESTED
 From Extra earthquake module warm up
@@ -34,7 +35,7 @@ Test 2. I [click on community centers or anywhere on the map].
   Expected: [returns nothing or points to three nearest things that the user typed in the search box]
 Test 3. I [the user types in a typo].
   Expected: [no "searched thing" was found; no console error].
-
+------------------------------------------
 Other ideas:
 have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
 
@@ -55,14 +56,7 @@ git push
 
 
 
-
 git status
 git add site/app.js
 git commit -m "changed weather pop up feature"
 git push
-
-My map is in site/app.js. This test fails:
-[paste the test, with its Expected line]
-What actually happens: [describe, and paste any red console line].
-Explain the likely cause first. Then make the smallest change
-that makes the test pass, and keep everything that already works.
