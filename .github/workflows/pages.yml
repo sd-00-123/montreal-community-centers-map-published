@@ -29,6 +29,7 @@ jobs:
         run: |
           mkdir dist
           cp site/index.html site/app.js site/style.css dist/
+          cp -r site/vendor dist/
           cp mtl_bound.geojson stops_clean_output.geojson \
             mtl_places_clean_output.geojson shapes.csv dist/
 
