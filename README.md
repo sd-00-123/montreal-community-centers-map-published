@@ -79,5 +79,5 @@ git push
 | 4. The edge | passed | no console break or red error for edge case; this was fixed with lab 7 test case 3 re run checks|
 | 5. The data does not come | ... | ... |
 | 6. On a phone (size view and my phone) | ... | ... |
-| 7. Mouse in my pocket | ... | ... |
+| 7. Mouse in my pocket | pass |ass buttons fuction as buttons |
 | 8. Accessibility audit | ... | ... |
