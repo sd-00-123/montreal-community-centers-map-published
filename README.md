@@ -7,7 +7,7 @@ https://sd-00-123.github.io/montreal-community-centers-map-published/site/
 For A3 I will add a live feature using open source api, so that my user can know the weather conditions on real time on any point htey click on the map.
 It has depth because it (computes / responds / brings in) complementry data that would be useful for the user.
 I will know it works when my pop up of weather data is on my map after I clicked any random point in Montreal.
-My edge case is data comes up emtpy / no data.
+My edge case is data allows live weather pop up so long as it does not break the console..
 
 Test 1. I [click any point on the map].
   Expected: [see live weather data on the point the user clicked].
