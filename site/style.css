@@ -98,6 +98,11 @@ a { color: var(--accent); }
   .page { grid-template-columns: 1fr; }   /* one column on a phone: story, then map */
   #map { height: 70vh; position: static; }
 }
+@media (max-width: 700px) {
+  .page { display: flex; flex-direction: column; }
+  #map { height: 60vh; order: 1; }
+  .story { order: 2; }
+}
 .legend { background: #fff; padding: 6px 10px; border-radius: 6px; line-height: 1.6; font-size: 14px; }
 .legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
 .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; }
