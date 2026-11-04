@@ -151,6 +151,15 @@ function isOnMontrealIsland(latlng) {
 
 function showWeatherPopup(latlng, placeName) {
   if (!isOnMontrealIsland(latlng)) {
+    clearTimeout(weatherRequestTimer);
+    if (weatherPopup) {
+      map.closePopup(weatherPopup);
+      weatherPopup = null;
+    }
+    if (weatherLoadingPopup) {
+      map.closePopup(weatherLoadingPopup);
+      weatherLoadingPopup = null;
+    }
     L.popup()
       .setLatLng(latlng)
       .setContent('Weather is available only on Montreal Island.')
