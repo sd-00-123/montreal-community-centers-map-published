@@ -1,7 +1,7 @@
 # montreal-community-centers-map-published
 Montreal elderly community and recreation centers map
 
-https://sd-00-123.github.io/montreal-community-centers-map-published/site/
+https://sd-00-123.github.io/montreal-community-centers-map-published/
 
 ## A3 feature: [a live button/feature]
 For A3 I will add a live feature using open source api, so that my user can know the weather conditions on real time on any point htey click on the map.
@@ -14,7 +14,7 @@ Test 1. I [click any point on the map].
   Passed; a weather pop up appeared in 3 seconds after a click event
 Test 2. I [click on an actually data point on the map].
     Expected: [see live weather data for the clicked data point].
-  To be retested after this update: weather popup should appear.
+  Passed
 Test 3. I [the user clickes outide of Montreal].
   Expected: [If availble allow weather data outside Montreal, as long as no error occurs.]
 Passed a weather pop up appeared in 3 seconds after a click event and did not break the console / return red error messages
@@ -23,6 +23,7 @@ Passed a weather pop up appeared in 3 seconds after a click event and did not br
 
 
 LATER THIS WEEK I WILL ADD:
+From Extra earthquake module warm up
 For A3 I will add a search feature, so that my reader can search community centers nearedt to them. and finds the three closest to them
 It has depth because it (computes / responds / brings in) answers the user is looking for.
 I will know it works when searching centers / centres works in the serach box.
