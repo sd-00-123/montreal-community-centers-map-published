@@ -116,11 +116,12 @@ function showWeatherPopup(latlng, placeName) {
   map.setView(latlng, 15);
 
   weatherPopup = L.popup({
-    closeOnClick: false
+    closeOnClick: false,
+    autoClose: false
   })
     .setLatLng(latlng)
     .setContent('Weather will load in 3 seconds...')
-    .openOn(map);
+    .addTo(map);
   const popup = weatherPopup;
 
   clearTimeout(weatherRequestTimer);
