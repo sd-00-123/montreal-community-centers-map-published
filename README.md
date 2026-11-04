@@ -11,11 +11,11 @@ My edge case is data allows live weather pop up so long as it does not break the
 
 Test 1. I [click any point on the map].
   Expected: [see live weather data on the point the user clicked].
-  Passed; a weather pop up appeared in 3 seconds after a click event.
+Passed; a weather pop up appeared in 3 seconds after a click event.
 
 Test 2. I [click on an actual data point on the map].
     Expected: [see live weather data for the clicked data point].
-  Passed: I see the live weather pop up in an actually data point.
+Passed: I see the live weather pop up on an actually data point.
 
 Test 3. I [the user clickes outide of Montreal].
   Expected: [show a message that weather is available only on Montreal Island, without calling the weather API.]
@@ -54,9 +54,9 @@ git add site/mtl_places_clean_output.geojson
 git commit -m "code for search box "
 git push
 
-
-
+--------------------------------
+Tailored message:
 git status
-git add site/app.js
-git commit -m "changed weather pop up feature"
+git add README.md
+git commit -m "Update weather test documentation"
 git push
