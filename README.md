@@ -11,13 +11,13 @@ My edge case is data allows live weather pop up so long as it does not break the
 
 Test 1. I [click any point on the map].
   Expected: [see live weather data on the point the user clicked].
-  Passed
+  Passed; a weather pop up appeared in 3 seconds after a click event
 Test 2. I [click on an actually data point on the map].
-  Expected: [returns nothing]
-  Passed
+    Expected: [see live weather data for the clicked data point].
+  To be retested after this update: weather popup should appear.
 Test 3. I [the user clickes outide of Montreal].
   Expected: [If availble allow weather data outside Montreal, as long as no error occurs.]
-Passed
+Passed a weather pop up appeared in 3 seconds after a click event and did not break the console / return red error messages
 
 
 

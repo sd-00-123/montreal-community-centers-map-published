@@ -103,20 +103,19 @@ function assessWeather(current) {
   };
 }
 
-// Show current weather for any location the reader clicks on the map.
-map.on('click', function (event) {
+function showWeatherPopup(latlng, placeName) {
   const place = {
-    name: 'Selected map location',
-    lat: event.latlng.lat,
-    lon: event.latlng.lng
+    name: placeName || 'selected map location',
+    lat: latlng.lat,
+    lon: latlng.lng
   };
 
-  map.setView(event.latlng, 15);
+  map.setView(latlng, 15);
 
   weatherPopup = L.popup({
     closeOnClick: false
   })
-    .setLatLng(event.latlng)
+    .setLatLng(latlng)
     .setContent('Weather will load in 3 seconds...')
     .openOn(map);
   const popup = weatherPopup;
@@ -141,7 +140,7 @@ map.on('click', function (event) {
       .then(function (data) {
         const weather = assessWeather(data.current);
         popup.setContent(
-          '<strong>Weather at selected location</strong><br>' +
+          '<strong>Weather at ' + place.name + '</strong><br>' +
           '<div class="weather-status ' + weather.statusClass + '">' +
           weather.status + '</div>' +
           '<div class="weather-scale" aria-label="Weather quality scale">' +
@@ -164,6 +163,22 @@ map.on('click', function (event) {
         console.error('Weather API error:', error);
       });
   }, 3000);
+}
+
+function bindWeatherToLayer(layer, placeName) {
+  layer.on('click', function (event) {
+    if (event.originalEvent) {
+      L.DomEvent.stopPropagation(event.originalEvent);
+    }
+    setTimeout(function () {
+      showWeatherPopup(event.latlng, placeName);
+    }, 0);
+  });
+}
+
+// Show current weather for any location the reader clicks on the map.
+map.on('click', function (event) {
+  showWeatherPopup(event.latlng, 'selected map location');
 });
 
 let boroughFeatures = [];
@@ -332,6 +347,7 @@ function renderPlaceLayers() {
       },
       onEachFeature: function (feature, layer) {
         const p = feature.properties;
+        bindWeatherToLayer(layer, p.titre_lieu || 'selected community place');
         layer.bindPopup(
           '<strong>' + (p.titre_lieu || 'Unnamed place') + '</strong><br>' +
           'Type: ' + (p.types || 'Not available') + '<br>' +
@@ -441,6 +457,7 @@ fetch('mtl_bound.geojson')
         };
       },
       onEachFeature: function (feature, layer) {
+        bindWeatherToLayer(layer, feature.properties.NOM || 'selected borough');
         layer.bindTooltip(feature.properties.NOM, {
           sticky: true
         });
@@ -577,6 +594,7 @@ Promise.all([
       // Add a popup using properties stored in each GeoJSON feature.
       onEachFeature: function (feature, layer) {
         const p = feature.properties;
+        bindWeatherToLayer(layer, p.stop_name || 'selected bus stop');
         layer.bindPopup('<strong>' + p.stop_name + '</strong><br>' +
           'ID: ' + p.stop_id);
       }
@@ -635,6 +653,7 @@ Promise.all([
       },
 
       onEachFeature: function (feature, layer) {
+        bindWeatherToLayer(layer, 'selected transit route');
         layer.bindPopup(
           '<strong>Shape: ' +
           feature.properties.shape_id +
