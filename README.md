@@ -73,10 +73,10 @@ git push
 ## Pre-flight report (Lab 7)
 | Check | Result | What I did |
 | --- | --- | --- |
-| 1. Cold start | pass / fault: ... | fixed in commit "..." / known issue |
-| 2. Read every label | ... | ... |
-| 3. Ask twice | ... | ... |
-| 4. The edge | ... | ... |
+| 1. Cold start | PASS / fault: ... | fixed in commit "..." nothing to commit working tree clean / known issue |
+| 2. Read every label | passed| no lincorrectly named label with undefenied. not availble data is eritten in po up or in a sentence |
+| 3. Ask twice | passed | prevous pop up data closes when a new click occurs|
+| 4. The edge | passed | no console break or red error for edge case|
 | 5. The data does not come | ... | ... |
 | 6. On a phone (size view and my phone) | ... | ... |
 | 7. Mouse in my pocket | ... | ... |
