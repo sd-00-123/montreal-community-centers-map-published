@@ -56,6 +56,39 @@ h2 { font-size: 20px; margin-top: 28px; }
   font-size: 15px;
   margin: 4px 0 0;
 }
+.weather-status {
+  border-radius: 4px;
+  font-weight: bold;
+  margin: 6px 0;
+  padding: 3px 6px;
+}
+.weather-good { background: #b7e4c7; color: #14532d; }
+.weather-caution { background: #fed7aa; color: #7c2d12; }
+.weather-bad { background: #fecaca; color: #7f1d1d; }
+.weather-scale {
+  background: linear-gradient(to right, #2e9d55 0%, #f59e0b 50%, #dc2626 100%);
+  border-radius: 5px;
+  height: 10px;
+  margin-top: 6px;
+  position: relative;
+}
+.weather-marker {
+  background: #fff;
+  border: 2px solid #1b1f2a;
+  border-radius: 50%;
+  box-sizing: border-box;
+  height: 16px;
+  position: absolute;
+  top: -3px;
+  transform: translateX(-50%);
+  width: 16px;
+}
+.weather-scale-labels {
+  display: flex;
+  font-size: 11px;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
 a { color: var(--accent); }
 #map {
   height: 800px;   /* without a height, the map is invisible */

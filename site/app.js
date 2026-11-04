@@ -12,6 +12,112 @@ const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 streets.addTo(map);
 
+let weatherRequestTimer;
+
+function assessWeather(current) {
+  let score = 100;
+
+  if (current.temperature_2m < -15 || current.temperature_2m > 35) {
+    score -= 35;
+  } else if (current.temperature_2m < -5 || current.temperature_2m > 30) {
+    score -= 20;
+  }
+
+  if (current.wind_speed_10m > 50) {
+    score -= 30;
+  } else if (current.wind_speed_10m > 30) {
+    score -= 20;
+  }
+
+  if (current.precipitation > 5 || current.snowfall > 2) {
+    score -= 30;
+  } else if (current.precipitation > 0 || current.snowfall > 0) {
+    score -= 15;
+  }
+
+  if ([65, 67, 75, 82, 95, 96, 99].indexOf(current.weather_code) !== -1) {
+    score -= 30;
+  } else if (current.weather_code >= 51) {
+    score -= 15;
+  }
+
+  score = Math.max(0, Math.min(100, score));
+
+  let status = 'Good conditions';
+  let statusClass = 'weather-good';
+  if (score < 40) {
+    status = 'Poor conditions';
+    statusClass = 'weather-bad';
+  } else if (score < 70) {
+    status = 'Use caution';
+    statusClass = 'weather-caution';
+  }
+
+  return {
+    score: score,
+    status: status,
+    statusClass: statusClass
+  };
+}
+
+// Show current weather for any location the reader clicks on the map.
+map.on('click', function (event) {
+  const place = {
+    name: 'Selected map location',
+    lat: event.latlng.lat,
+    lon: event.latlng.lng
+  };
+
+  const popup = L.popup()
+    .setLatLng(event.latlng)
+    .setContent('Weather will load in 3 seconds...')
+    .openOn(map);
+
+  clearTimeout(weatherRequestTimer);
+  weatherRequestTimer = setTimeout(function () {
+    const params = new URLSearchParams({
+      latitude: place.lat,
+      longitude: place.lon,
+      current: 'temperature_2m,wind_speed_10m,precipitation,snowfall,weather_code'
+    });
+    const url = 'https://api.open-meteo.com/v1/forecast?' + params;
+
+    fetch(url)
+      .then(function (response) {
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+
+        return response.json();
+      })
+      .then(function (data) {
+        const weather = assessWeather(data.current);
+        popup.setContent(
+          '<strong>Weather at selected location</strong><br>' +
+          '<div class="weather-status ' + weather.statusClass + '">' +
+          weather.status + '</div>' +
+          '<div class="weather-scale" aria-label="Weather quality scale">' +
+          '<span class="weather-marker" style="left: ' + (100 - weather.score) +
+          '%"></span></div>' +
+          '<div class="weather-scale-labels"><span>Good</span>' +
+          '<span>Caution</span><span>Bad</span></div>' +
+          'Temperature: ' + data.current.temperature_2m + ' ' +
+          data.current_units.temperature_2m + '<br>' +
+          'Wind speed: ' + data.current.wind_speed_10m + ' ' +
+          data.current_units.wind_speed_10m + '<br>' +
+          'Precipitation: ' + data.current.precipitation + ' ' +
+          data.current_units.precipitation + '<br>' +
+          'Snowfall: ' + data.current.snowfall + ' ' +
+          data.current_units.snowfall
+        );
+      })
+      .catch(function (error) {
+        popup.setContent('Could not get weather: ' + error.message);
+        console.error('Weather API error:', error);
+      });
+  }, 3000);
+});
+
 let boroughFeatures = [];
 let selectedBorough = '';
 let placeCategories;
@@ -19,6 +125,11 @@ let placesData;
 let boroughLayer;
 let boroughDensity = {};
 let placeSearchTerm = '';
+
+// Update the page with a small JavaScript demonstration.
+const center = document.getElementById('center');
+center.textContent = 'Hello from JavaScript';
+center.style.background = '#DCBD23';
 
 const categoryColors = {
   'Parks and gardens': '#32d515aa',
@@ -35,6 +146,15 @@ function colourFor(value) {
   if (value > 0)    return '#e6b8b8';
   return '#f2dede';
 }
+
+function demoColourFor(value) {
+  if (value >= 50) return '#b30000';
+  if (value >= 25) return '#e34a33';
+  if (value > 0) return '#fdcc8a';
+  return '#eeeeee';
+}
+
+console.log(demoColourFor(30), demoColourFor(0), demoColourFor(80));
 
 
 function getBoroughColor(borough) {
@@ -553,3 +673,40 @@ fetch('mtl_places_clean_output.geojson')
 
     console.error(err);
   });
+
+/*
+ * 211 QUEBEC API TEMPLATE
+ *
+ * This section is intentionally commented out until an approved API endpoint,
+ * API key, and permission to republish the returned data are available.
+ *
+ * const apiUrl = 'https://data.211support.org/api/v1/search?key=YOUR_API_KEY';
+ *
+ * fetch(apiUrl, {
+ *   method: 'POST',
+ *   headers: {
+ *     'Content-Type': 'application/json'
+ *   },
+ *   body: JSON.stringify({
+ *     Lang: 'en',
+ *     Search: 'community centres and recreation',
+ *     SearchType: 'coverage',
+ *     PageIndex: 0,
+ *     PageSize: 50
+ *   })
+ * })
+ *   .then(function (response) {
+ *     if (!response.ok) {
+ *       throw new Error('Could not load 211 data');
+ *     }
+ *
+ *     return response.json();
+ *   })
+ *   .then(function (data) {
+ *     console.log(data);
+ *     // Convert approved 211 results into map markers here.
+ *   })
+ *   .catch(function (error) {
+ *     console.error('211 API error:', error);
+ *   });
+ */
