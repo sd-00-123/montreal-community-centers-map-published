@@ -18,6 +18,7 @@ let placeCategories;
 let placesData;
 let boroughLayer;
 let boroughDensity = {};
+let placeSearchTerm = '';
 
 const categoryColors = {
   'Parks and gardens': '#32d515aa',
@@ -88,6 +89,38 @@ function featureBelongsToBorough(feature, borough) {
     .indexOf(borough) !== -1;
 }
 
+function norm(value) {
+  return (value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function featureMatchesSearch(feature) {
+  if (!placeSearchTerm) {
+    return true;
+  }
+
+  const properties = feature.properties;
+  return norm(properties.titre_lieu).includes(placeSearchTerm) ||
+    norm(properties.arrondissements).includes(placeSearchTerm);
+}
+
+function updatePlaceCount() {
+  const count = document.getElementById('place-count');
+  if (!count || !placesData) {
+    return;
+  }
+
+  const shown = placesData.features.filter(function (feature) {
+    return featureMatchesSearch(feature) &&
+      featureBelongsToBorough(feature, selectedBorough);
+  }).length;
+
+  count.textContent = shown + ' of ' + placesData.features.length + ' places shown';
+}
+
 function getPlaceRadius(zoom) {
   return Math.max(3, Math.min(8, 14 - (zoom * 0.6)));
 }
@@ -117,7 +150,8 @@ function renderPlaceLayers() {
     const categoryLayer = L.geoJSON(placesData, {
       filter: function (feature) {
         return feature.properties.types === category &&
-          featureBelongsToBorough(feature, selectedBorough);
+          featureBelongsToBorough(feature, selectedBorough) &&
+          featureMatchesSearch(feature);
       },
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
@@ -200,6 +234,7 @@ function addBoroughControl() {
     L.DomEvent.on(select, 'change', function (event) {
       selectedBorough = event.target.value;
       renderPlaceLayers();
+      updatePlaceCount();
       zoomToBorough(selectedBorough);
     });
 
@@ -251,6 +286,7 @@ fetch('../mtl_bound.geojson')
           }
 
           renderPlaceLayers();
+          updatePlaceCount();
           zoomToBorough(selectedBorough);
         });
       }
@@ -487,6 +523,7 @@ fetch('../mtl_places_clean_output.geojson')
 
     map.on('zoomend', updatePlacePointSizes);
     renderPlaceLayers();
+    updatePlaceCount();
 
     L.control.layers(
       { 'Streets': streets },
@@ -503,6 +540,12 @@ fetch('../mtl_places_clean_output.geojson')
 
     document.getElementById('status').textContent =
       placesData.features.length + ' of ' + data.features.length + ' places shown';
+
+    document.getElementById('place-search').addEventListener('input', function (event) {
+      placeSearchTerm = norm(event.target.value);
+      renderPlaceLayers();
+      updatePlaceCount();
+    });
   })
   .catch(function (err) {
     document.getElementById('status').textContent =
