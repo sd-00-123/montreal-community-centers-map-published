@@ -1,7 +1,11 @@
 # montreal-community-centers-map-published
 Montreal elderly community and recreation centers map
 
+page
 https://sd-00-123.github.io/montreal-community-centers-map-published/
+
+Site URL
+https://sd-00-123.github.io/montreal-community-centers-map-published/site/
 
 ## A3 feature: [a live button/feature]
 For A3 I will add a live feature using open source api, so that my user can know the weather conditions on real time on any point htey click on the map.
@@ -60,3 +64,20 @@ git status
 git add README.md
 git commit -m "Update weather test documentation"
 git push
+
+
+
+
+-----------------
+
+## Pre-flight report (Lab 7)
+| Check | Result | What I did |
+| --- | --- | --- |
+| 1. Cold start | pass / fault: ... | fixed in commit "..." / known issue |
+| 2. Read every label | ... | ... |
+| 3. Ask twice | ... | ... |
+| 4. The edge | ... | ... |
+| 5. The data does not come | ... | ... |
+| 6. On a phone (size view and my phone) | ... | ... |
+| 7. Mouse in my pocket | ... | ... |
+| 8. Accessibility audit | ... | ... |
