@@ -62,7 +62,7 @@ git push
 Tailored message:
 git status
 git add README.md
-git commit -m "Update weather test documentation"
+git commit -m "Update readme"
 git push
 
 
