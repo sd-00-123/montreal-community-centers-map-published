@@ -284,6 +284,53 @@ function norm(value) {
     .trim();
 }
 
+function isPostalCode(value) {
+  return /^[A-Z]\d[A-Z]\s?\d[A-Z]\d$/i.test(value.trim());
+}
+
+function findPostalCode(value) {
+  const search = new URLSearchParams({
+    q: value.trim().toUpperCase() + ', Montreal, Canada',
+    format: 'jsonv2',
+    limit: '1'
+  });
+  const url = 'https://nominatim.openstreetmap.org/search?' + search;
+  const count = document.getElementById('place-count');
+
+  if (count) {
+    count.textContent = 'Looking up postal code...';
+  }
+
+  fetch(url)
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+
+      return response.json();
+    })
+    .then(function (results) {
+      if (!results.length) {
+        if (count) {
+          count.textContent = 'Postal code not found';
+        }
+        return;
+      }
+
+      const location = results[0];
+      map.setView([Number(location.lat), Number(location.lon)], 14);
+      if (count) {
+        count.textContent = 'Map centered on ' + value.trim().toUpperCase();
+      }
+    })
+    .catch(function (error) {
+      if (count) {
+        count.textContent = 'Could not find postal code';
+      }
+      console.error('Postal code lookup error:', error);
+    });
+}
+
 function featureMatchesSearch(feature) {
   if (!placeSearchTerm) {
     return true;
@@ -739,10 +786,26 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
     document.getElementById('status').textContent =
       placesData.features.length + ' of ' + data.features.length + ' places shown';
 
-    document.getElementById('place-search').addEventListener('input', function (event) {
-      placeSearchTerm = norm(event.target.value);
+    const placeSearch = document.getElementById('place-search');
+    placeSearch.addEventListener('input', function (event) {
+      const value = event.target.value.trim();
+      if (isPostalCode(value)) {
+        placeSearchTerm = '';
+        renderPlaceLayers();
+        document.getElementById('place-count').textContent =
+          'Press Enter to zoom to this postal code';
+        return;
+      }
+
+      placeSearchTerm = norm(value);
       renderPlaceLayers();
       updatePlaceCount();
+    });
+    placeSearch.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' && isPostalCode(event.target.value)) {
+        event.preventDefault();
+        findPostalCode(event.target.value);
+      }
     });
   })
   .catch(function (err) {
