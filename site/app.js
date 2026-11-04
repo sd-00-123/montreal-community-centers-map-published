@@ -245,7 +245,7 @@ function addBoroughControl() {
 }
 
 // MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
-fetch('../mtl_bound.geojson')
+fetch('mtl_bound.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
@@ -343,8 +343,8 @@ legend.addTo(map);
 // STOPS DATA: shows all MTL bus stop locations
 // Request the stops GeoJSON and route-point CSV from the repository root.
 Promise.all([
-  fetch('../stops_clean_output.geojson'),
-  fetch('../shapes.csv')
+  fetch('stops_clean_output.geojson'),
+  fetch('shapes.csv')
 ])
   .then(function (responses) {
     responses.forEach(function (response) {
@@ -490,7 +490,7 @@ Promise.all([
 //-------------------------------------------
 // MONTREAL PLACES DATA: shows POI in Montreal
 
-fetch('../mtl_places_clean_output.geojson')
+fetch('mtl_places_clean_output.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
