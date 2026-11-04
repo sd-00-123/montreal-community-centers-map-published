@@ -305,7 +305,9 @@ function updatePlaceCount() {
       featureBelongsToBorough(feature, selectedBorough);
   }).length;
 
-  count.textContent = shown + ' of ' + placesData.features.length + ' places shown';
+  count.textContent = shown === 0 && placeSearchTerm
+    ? 'No match'
+    : shown + ' of ' + placesData.features.length + ' places shown';
 }
 
 function getPlaceRadius(zoom) {
@@ -332,13 +334,18 @@ function renderPlaceLayers() {
     return;
   }
 
+  const searchMatches = placesData.features.some(function (feature) {
+    return featureMatchesSearch(feature) &&
+      featureBelongsToBorough(feature, selectedBorough);
+  });
+
   Object.keys(placeCategories).forEach(function (category) {
     placeCategories[category].clearLayers();
     const categoryLayer = L.geoJSON(placesData, {
       filter: function (feature) {
         return feature.properties.types === category &&
           featureBelongsToBorough(feature, selectedBorough) &&
-          featureMatchesSearch(feature);
+        (!placeSearchTerm || !searchMatches || featureMatchesSearch(feature));
       },
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {

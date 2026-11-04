@@ -37,6 +37,14 @@ Test 3. I [the user types in a typo].
   Expected: [no "searched thing" was found; no console error].
 
 
+In site/app.js, add a search box above the map that filters the features
+in [layer variable] by the property [field]. Matching ignores capitals and
+accents. Show '[n] of [total] shown' under the box. If nothing matches,
+show 'No match' and keep the full map. These three tests must pass:
+1. [normal case]  2. [edge case]  3. [edge case].
+Do not add libraries. Before writing code, explain your plan in five
+lines. Then show the diff and say which lines are the handler.
+
 
 git status
 git add site/mtl_places_clean_output.geojson
