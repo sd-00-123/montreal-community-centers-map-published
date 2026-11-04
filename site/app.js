@@ -51,12 +51,17 @@ fetch(hallWeatherUrl)
 
 let weatherRequestTimer;
 let weatherPopup;
+let weatherLoadingPopup;
 const weatherPopupMinimumZoom = 12;
 
 map.on('zoomend', function () {
   if (weatherPopup && map.getZoom() < weatherPopupMinimumZoom) {
     map.closePopup(weatherPopup);
     weatherPopup = null;
+  }
+  if (weatherLoadingPopup && map.getZoom() < weatherPopupMinimumZoom) {
+    map.closePopup(weatherLoadingPopup);
+    weatherLoadingPopup = null;
   }
 });
 
@@ -115,16 +120,22 @@ function showWeatherPopup(latlng, placeName) {
 
   map.setView(latlng, 15);
 
-  weatherPopup = L.popup({
+  clearTimeout(weatherRequestTimer);
+  if (weatherPopup) {
+    map.closePopup(weatherPopup);
+    weatherPopup = null;
+  }
+  if (weatherLoadingPopup) {
+    map.closePopup(weatherLoadingPopup);
+  }
+  weatherLoadingPopup = L.popup({
     closeOnClick: false,
     autoClose: false
   })
     .setLatLng(latlng)
     .setContent('Weather will load in 3 seconds...')
     .addTo(map);
-  const popup = weatherPopup;
-
-  clearTimeout(weatherRequestTimer);
+  const loadingPopup = weatherLoadingPopup;
   weatherRequestTimer = setTimeout(function () {
     const params = new URLSearchParams({
       latitude: place.lat,
@@ -142,28 +153,44 @@ function showWeatherPopup(latlng, placeName) {
         return response.json();
       })
       .then(function (data) {
+        if (weatherLoadingPopup !== loadingPopup) {
+          return;
+        }
         const weather = assessWeather(data.current);
-        popup.setContent(
-          '<strong>Weather at ' + place.name + '</strong><br>' +
-          '<div class="weather-status ' + weather.statusClass + '">' +
-          weather.status + '</div>' +
-          '<div class="weather-scale" aria-label="Weather quality scale">' +
-          '<span class="weather-marker" style="left: ' + (100 - weather.score) +
-          '%"></span></div>' +
-          '<div class="weather-scale-labels"><span>Good</span>' +
-          '<span>Caution</span><span>Bad</span></div>' +
-          'Temperature: ' + data.current.temperature_2m + ' ' +
-          data.current_units.temperature_2m + '<br>' +
-          'Wind speed: ' + data.current.wind_speed_10m + ' ' +
-          data.current_units.wind_speed_10m + '<br>' +
-          'Precipitation: ' + data.current.precipitation + ' ' +
-          data.current_units.precipitation + '<br>' +
-          'Snowfall: ' + data.current.snowfall + ' ' +
-          data.current_units.snowfall
-        );
+        map.closePopup(loadingPopup);
+        if (weatherLoadingPopup === loadingPopup) {
+          weatherLoadingPopup = null;
+        }
+        weatherPopup = L.popup({
+          closeOnClick: false,
+          autoClose: false
+        })
+          .setLatLng(latlng)
+          .setContent(
+            '<strong>Weather at ' + place.name + '</strong><br>' +
+            '<div class="weather-status ' + weather.statusClass + '">' +
+            weather.status + '</div>' +
+            '<div class="weather-scale" aria-label="Weather quality scale">' +
+            '<span class="weather-marker" style="left: ' + (100 - weather.score) +
+            '%"></span></div>' +
+            '<div class="weather-scale-labels"><span>Good</span>' +
+            '<span>Caution</span><span>Bad</span></div>' +
+            'Temperature: ' + data.current.temperature_2m + ' ' +
+            data.current_units.temperature_2m + '<br>' +
+            'Wind speed: ' + data.current.wind_speed_10m + ' ' +
+            data.current_units.wind_speed_10m + '<br>' +
+            'Precipitation: ' + data.current.precipitation + ' ' +
+            data.current_units.precipitation + '<br>' +
+            'Snowfall: ' + data.current.snowfall + ' ' +
+            data.current_units.snowfall
+          )
+          .addTo(map);
       })
       .catch(function (error) {
-        popup.setContent('Could not get weather: ' + error.message);
+        if (weatherLoadingPopup !== loadingPopup) {
+          return;
+        }
+        loadingPopup.setContent('Could not get weather: ' + error.message);
         console.error('Weather API error:', error);
       });
   }, 3000);
