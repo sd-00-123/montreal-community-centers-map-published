@@ -94,15 +94,7 @@ a { color: var(--accent); }
   height: 800px;   /* without a height, the map is invisible */
   border-radius: 8px;
 }
-@media (max-width: 375px) {
-  .page { grid-template-columns: 1fr; }   /* one column on a phone: story, then map */
-  #map { height: 70vh; position: static; }
-}
-@media (max-width: 500x) {
-  .page { display: flex; flex-direction: column; }
-  #map { height: 60vh; order: 1; }
-  .story { order: 2; }
-}
+
 .legend { background: #fff; padding: 6px 10px; border-radius: 6px; line-height: 1.6; font-size: 14px; }
 .legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
 .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; }
@@ -177,7 +169,7 @@ a { color: var(--accent); }
 }
 
 /* on a narrow screen the panel goes below the map instead of squeezing it to nothing. */
-@media (max-width: 700px) {
+@media (max-width: 375px) {
   main { flex-direction: column; height: auto; }
   #map { flex: none; height: 60vh; order: 1; }
   #panel { width: auto; order: 2; border-right: 0; border-top: 3px solid #DCBD23; }

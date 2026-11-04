@@ -76,9 +76,14 @@ git push
 | 1. Cold start | PASS / fault: none | fixed in commit "nothing to commit working tree clean" / known issue |
 | 2. Read every label | passed| no lincorrectly named label with undefenied. not availble data is eritten in po up or in a sentence |
 | 3. Ask twice | passed | prevous pop up data closes when a new click occurs|
-| 4. The edge | passed | no console break or red error for edge case; this was fixed with lab 7 test case 3 re run checks|
-| 5. The data does not come | ... | ... |
-| 6. On a phone (size view and my phone) | ... | ... |
+| 4. The edge | passed | no console break or red error for edge case; this was fixed with lab 7 test case 3 re-run checks|
+| 5. The data does not come | ... | the url showned in red but no change happened on the private page |
+| 6. On a phone (size view and my phone) | ... | no change |
 | 7. Mouse in my pocket | pass | all my tabs pass as buttons
 tons fuction as buttons |
-| 8. Accessibility audit | ... | ... |
+| 8. Accessibility audit | passed | accesibility 100 percent? |
+
+
+
+
+
