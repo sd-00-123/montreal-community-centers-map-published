@@ -11,18 +11,17 @@ My edge case is data allows live weather pop up so long as it does not break the
 
 Test 1. I [click any point on the map].
   Expected: [see live weather data on the point the user clicked].
-  Passed; a weather pop up appeared in 3 seconds after a click event
-Test 2. I [click on an actually data point on the map].
+  Passed; a weather pop up appeared in 3 seconds after a click event.
+
+Test 2. I [click on an actual data point on the map].
     Expected: [see live weather data for the clicked data point].
-  Passed
+  Passed:
 Test 3. I [the user clickes outide of Montreal].
   Expected: [If availble allow weather data outside Montreal, as long as no error occurs.]
 Passed a weather pop up appeared in 3 seconds after a click event and did not break the console / return red error messages
 
 
-
-
-LATER THIS WEEK I WILL ADD:
+Another Feature Test: TO BE TESTED
 From Extra earthquake module warm up
 For A3 I will add a search feature, so that my reader can search community centers nearedt to them. and finds the three closest to them
 It has depth because it (computes / responds / brings in) answers the user is looking for.
@@ -35,6 +34,9 @@ Test 2. I [click on community centers or anywhere on the map].
   Expected: [returns nothing or points to three nearest things that the user typed in the search box]
 Test 3. I [the user types in a typo].
   Expected: [no "searched thing" was found; no console error].
+
+Other ideas:
+have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
 
 
 In site/app.js, add a search box above the map that filters the features
@@ -50,3 +52,17 @@ git status
 git add site/mtl_places_clean_output.geojson
 git commit -m "code for search box "
 git push
+
+
+
+
+git status
+git add site/app.js
+git commit -m "changed weather pop up feature"
+git push
+
+My map is in site/app.js. This test fails:
+[paste the test, with its Expected line]
+What actually happens: [describe, and paste any red console line].
+Explain the likely cause first. Then make the smallest change
+that makes the test pass, and keep everything that already works.

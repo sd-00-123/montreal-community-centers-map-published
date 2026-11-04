@@ -129,6 +129,7 @@ function showWeatherPopup(latlng, placeName) {
     map.closePopup(weatherLoadingPopup);
   }
   weatherLoadingPopup = L.popup({
+    closeButton: true,
     closeOnClick: false,
     autoClose: false
   })
@@ -162,6 +163,7 @@ function showWeatherPopup(latlng, placeName) {
           weatherLoadingPopup = null;
         }
         weatherPopup = L.popup({
+          closeButton: true,
           closeOnClick: false,
           autoClose: false
         })
@@ -444,7 +446,8 @@ function renderPlaceLayers() {
           (p.url_fiche
             ? '<br><a href="' + p.url_fiche +
               '" target="_blank" rel="noopener">More information</a>'
-            : '')
+            : ''),
+          { closeButton: true }
         );
       }
     });
@@ -680,8 +683,11 @@ Promise.all([
       onEachFeature: function (feature, layer) {
         const p = feature.properties;
         bindWeatherToLayer(layer, p.stop_name || 'selected bus stop');
-        layer.bindPopup('<strong>' + p.stop_name + '</strong><br>' +
-          'ID: ' + p.stop_id);
+        layer.bindPopup(
+          '<strong>' + p.stop_name + '</strong><br>' +
+          'ID: ' + p.stop_id,
+          { closeButton: true }
+        );
       }
     });
 
@@ -742,7 +748,8 @@ Promise.all([
         layer.bindPopup(
           '<strong>Shape: ' +
           feature.properties.shape_id +
-          '</strong>'
+          '</strong>',
+          { closeButton: true }
         );
       }
     });
