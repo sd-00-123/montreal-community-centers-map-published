@@ -4,6 +4,9 @@
 // preferCanvas improves performance when many point features are displayed.
 const map = L.map('map', { preferCanvas: true }).setView([45.55, -73.7], 10);
 
+// Support both the current root deployment and the legacy /site/ URL.
+const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
+
 // Add OpenStreetMap as the background tile layer.
 const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 15,
@@ -413,7 +416,7 @@ function addBoroughControl() {
 }
 
 // MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
-fetch('mtl_bound.geojson')
+fetch(dataRoot + 'mtl_bound.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
@@ -511,8 +514,8 @@ legend.addTo(map);
 // STOPS DATA: shows all MTL bus stop locations
 // Request the stops GeoJSON and route-point CSV from the repository root.
 Promise.all([
-  fetch('stops_clean_output.geojson'),
-  fetch('shapes.csv')
+  fetch(dataRoot + 'stops_clean_output.geojson'),
+  fetch(dataRoot + 'shapes.csv')
 ])
   .then(function (responses) {
     responses.forEach(function (response) {
@@ -658,7 +661,7 @@ Promise.all([
 //-------------------------------------------
 // MONTREAL PLACES DATA: shows POI in Montreal
 
-fetch('mtl_places_clean_output.geojson')
+fetch(dataRoot + 'mtl_places_clean_output.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
