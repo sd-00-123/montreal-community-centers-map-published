@@ -2,7 +2,7 @@
 
 // Create the map inside the HTML element with id="map".
 // preferCanvas improves performance when many point features are displayed.
-const map = L.map('map', { preferCanvas: true }).setView([45.55, -73.7], 10);
+const map = L.map('map', { preferCanvas: true }).setView([45.45, -73.7], 10.45);
 
 // Support both the current root deployment and the legacy /site/ URL.
 const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
