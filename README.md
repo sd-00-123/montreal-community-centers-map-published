@@ -61,10 +61,9 @@ git push
 --------------------------------
 Tailored message:
 git status
-git add README.md
-git commit -m "Update readme"
+git add site/index.html
+git commit -m "Update html"
 git push
-
 
 
 
@@ -73,15 +72,30 @@ git push
 ## Pre-flight report (Lab 7)
 | Check | Result | What I did |
 | --- | --- | --- |
-| 1. Cold start | PASS / fault: none | fixed in commit "nothing to commit working tree clean" / known issue |
-| 2. Read every label | passed| no lincorrectly named label with undefenied. not availble data is eritten in po up or in a sentence |
-| 3. Ask twice | passed | prevous pop up data closes when a new click occurs|
-| 4. The edge | passed | no console break or red error for edge case; this was fixed with lab 7 test case 3 re-run checks|
+
+| 1. Cold start 
+| PASSED | ran console - no red error | "nothing to commit working tree clean" |
+
+| 2. Read every label 
+| PASSED | checked data points | No incorrectly named label with undefined. 
+Not availble data is written in po up or in a sentence |
+
+| 3. Ask twice 
+| PASSED | Clicked random point on the map and then another right after | Prevous pop up data closes when a new click occurs|
+
+| 4. The edge 
+| PASSED | No console break or red error for edge case | This was fixed with lab 7 test case 3 re-run checks|
+
 | 5. The data does not come | ... | the url showned in red but no change happened on the private page |
-| 6. On a phone (size view and my phone) | ... | no change |
-| 7. Mouse in my pocket | pass | all my tabs pass as buttons
-tons fuction as buttons |
-| 8. Accessibility audit | passed | accesibility 100 percent? |
+
+| 6. On a phone (size view and my phone) 
+| ... | no change |
+
+| 7. Mouse in my pocket 
+| PASSED | Ran tab on my git pages stie | All my tabs pass as buttons and fuction as buttons |
+
+| 8. Accessibility audit 
+| Passed | Ran accecibility and lighthouse feature | Shows accesbility 100, no red errors.
 
 
 
