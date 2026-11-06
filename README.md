@@ -69,8 +69,8 @@ git push
 --------------------------------
 Tailored message:
 git status
-git add site/index.html
-git commit -m "Update html"
+git add README.md
+git commit -m "Updated readme"
 git push
 
 
