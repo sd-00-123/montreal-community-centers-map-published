@@ -41,7 +41,15 @@ Test 3. I [the user types in a typo].
   Expected: [no "searched thing" was found; no console error].
 ------------------------------------------
 Other ideas:
-have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
+1. Have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
+
+2. Have a open souce portion for users to input other unknown locations or update pop up info ONLY
+sort of like a editable front end page?
+
+-------------------------------------------
+To Solve:
+Nedd to find a way through api keys with 211 grand montreal 
+
 
 
 In site/app.js, add a search box above the map that filters the features
