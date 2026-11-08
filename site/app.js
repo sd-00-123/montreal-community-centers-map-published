@@ -162,47 +162,6 @@ function isOnMontrealIsland(latlng) {
   });
 }
 
-function makeWeatherPopupDraggable(popup) {
-  const container = popup.getElement();
-  const handle = container && container.querySelector('.weather-drag-handle');
-  if (!container || !handle) {
-    return;
-  }
-
-  let startX;
-  let startY;
-  let startLeft;
-  let startTop;
-
-  handle.addEventListener('pointerdown', function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    startX = event.clientX;
-    startY = event.clientY;
-    startLeft = container.offsetLeft;
-    startTop = container.offsetTop;
-    handle.setPointerCapture(event.pointerId);
-
-    function move(pointerEvent) {
-      container.style.left = startLeft + pointerEvent.clientX - startX + 'px';
-      container.style.top = startTop + pointerEvent.clientY - startY + 'px';
-    }
-
-    function stop(pointerEvent) {
-      if (handle.hasPointerCapture(pointerEvent.pointerId)) {
-        handle.releasePointerCapture(pointerEvent.pointerId);
-      }
-      handle.removeEventListener('pointermove', move);
-      handle.removeEventListener('pointerup', stop);
-      handle.removeEventListener('pointercancel', stop);
-    }
-
-    handle.addEventListener('pointermove', move);
-    handle.addEventListener('pointerup', stop);
-    handle.addEventListener('pointercancel', stop);
-  });
-}
-
 function showWeatherPopup(latlng, placeName) {
   if (!isOnMontrealIsland(latlng)) {
     clearTimeout(weatherRequestTimer);
@@ -240,16 +199,11 @@ function showWeatherPopup(latlng, placeName) {
   weatherLoadingPopup = L.popup({
     closeButton: true,
     closeOnClick: false,
-    autoClose: false,
-    className: 'weather-popup'
+    autoClose: false
   })
     .setLatLng(latlng)
-    .setContent(
-      '<div class="weather-drag-handle" title="Drag weather panel">' +
-      'Weather</div><div>Weather will load in 3 seconds...</div>'
-    )
+    .setContent('Weather will load in 3 seconds...')
     .addTo(map);
-  makeWeatherPopupDraggable(weatherLoadingPopup);
   const loadingPopup = weatherLoadingPopup;
   weatherRequestTimer = setTimeout(function () {
     const params = new URLSearchParams({
@@ -279,13 +233,11 @@ function showWeatherPopup(latlng, placeName) {
         weatherPopup = L.popup({
           closeButton: true,
           closeOnClick: false,
-          autoClose: false,
-          className: 'weather-popup'
+          autoClose: false
         })
           .setLatLng(latlng)
           .setContent(
-            '<div class="weather-drag-handle" title="Drag weather panel">' +
-            '<strong>Weather at ' + place.name + '</strong></div>' +
+            '<strong>Weather at ' + place.name + '</strong><br>' +
             '<div class="weather-status ' + weather.statusClass + '">' +
             weather.status + '</div>' +
             '<div class="weather-scale" aria-label="Weather quality scale">' +
@@ -303,7 +255,6 @@ function showWeatherPopup(latlng, placeName) {
             data.current_units.snowfall
           )
           .addTo(map);
-        makeWeatherPopupDraggable(weatherPopup);
       })
       .catch(function (error) {
         if (weatherLoadingPopup !== loadingPopup) {
