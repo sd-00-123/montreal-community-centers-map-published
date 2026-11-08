@@ -509,8 +509,7 @@ function renderPlaceLayers() {
           'Type: ' + (p.types || 'Not available') + '<br>' +
           'Installation: ' + (p.installations || 'Not available') + '<br>' +
           'Borough: ' + (p.arrondissements || 'Not available') + '<br>' +
-          'Description: ' + (p.description || 'Not available') + '<br>' +
-          'Hours of Service: ' + (p.statut_ouverture || 'Not available') + '<br>' +
+          'Hours of Service: ' + (p.horaire_par_jour || 'Not available') + '<br>' +
           'Website: ' + (p.url_fiche || 'Not available') + '<br>' +
           (p.url_fiche
             ? '<br><a href="' + p.url_fiche +
