@@ -57,7 +57,8 @@ const translations = {
     busStop: 'Bus stop',
     communityCentre: 'Community centre',
     distance: 'Distance',
-    nearestButton: 'For nearest options'
+    nearestButton: 'For nearest options',
+    weatherButton: 'For weather conditions'
   },
   fr: {
     title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
@@ -103,7 +104,8 @@ const translations = {
     busStop: 'Arrêt d’autobus',
     communityCentre: 'Centre communautaire',
     distance: 'Distance',
-    nearestButton: 'Pour les options les plus proches'
+    nearestButton: 'Pour les options les plus proches',
+    weatherButton: 'Pour les conditions météorologiques'
   }
 };
 
@@ -418,6 +420,55 @@ function isOnMontrealIsland(latlng) {
   });
 }
 
+function weatherContent(data, placeName) {
+  const weather = assessWeather(data.current);
+  return '<strong>' + translate('weatherAt') + ' ' + escapeHtml(placeName) +
+    '</strong><br>' +
+    '<div class="weather-status ' + weather.statusClass + '">' +
+    weather.status + '</div>' +
+    '<div class="weather-scale" aria-label="Weather quality scale">' +
+    '<span class="weather-marker" style="left: ' + (100 - weather.score) +
+    '%"></span></div>' +
+    '<div class="weather-scale-labels"><span>' + translate('good') + '</span>' +
+    '<span>' + translate('caution') + '</span><span>' + translate('bad') +
+    '</span></div>' +
+    translate('temperature') + ': ' + data.current.temperature_2m + ' ' +
+    data.current_units.temperature_2m + '<br>' +
+    translate('windSpeed') + ': ' + data.current.wind_speed_10m + ' ' +
+    data.current_units.wind_speed_10m + '<br>' +
+    translate('precipitation') + ': ' + data.current.precipitation + ' ' +
+    data.current_units.precipitation + '<br>' +
+    translate('snowfall') + ': ' + data.current.snowfall + ' ' +
+    data.current_units.snowfall;
+}
+
+function loadWeatherIntoPanel(latlng, placeName, panel) {
+  panel.textContent = translate('weatherLoading');
+  const params = new URLSearchParams({
+    latitude: latlng.lat,
+    longitude: latlng.lng,
+    current: 'temperature_2m,wind_speed_10m,precipitation,snowfall,weather_code'
+  });
+
+  fetch('https://api.open-meteo.com/v1/forecast?' + params)
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+      return response.json();
+    })
+    .then(function (data) {
+      panel.innerHTML = weatherContent(data, placeName);
+    })
+    .catch(function (error) {
+      panel.textContent =
+        (currentLanguage === 'fr'
+          ? 'Impossible de récupérer la météo : '
+          : 'Could not get weather: ') + error.message;
+      console.error('Weather API error:', error);
+    });
+}
+
 function showWeatherPopup(latlng, placeName) {
   if (!isOnMontrealIsland(latlng)) {
     clearTimeout(weatherRequestTimer);
@@ -481,7 +532,6 @@ function showWeatherPopup(latlng, placeName) {
         if (weatherLoadingPopup !== loadingPopup) {
           return;
         }
-        const weather = assessWeather(data.current);
         map.closePopup(loadingPopup);
         if (weatherLoadingPopup === loadingPopup) {
           weatherLoadingPopup = null;
@@ -492,24 +542,7 @@ function showWeatherPopup(latlng, placeName) {
           autoClose: false
         })
           .setLatLng(latlng)
-          .setContent(
-            '<strong>' + translate('weatherAt') + ' ' + place.name + '</strong><br>' +
-            '<div class="weather-status ' + weather.statusClass + '">' +
-            weather.status + '</div>' +
-            '<div class="weather-scale" aria-label="Weather quality scale">' +
-            '<span class="weather-marker" style="left: ' + (100 - weather.score) +
-            '%"></span></div>' +
-            '<div class="weather-scale-labels"><span>' + translate('good') + '</span>' +
-            '<span>' + translate('caution') + '</span><span>' + translate('bad') + '</span></div>' +
-            translate('temperature') + ': ' + data.current.temperature_2m + ' ' +
-            data.current_units.temperature_2m + '<br>' +
-            translate('windSpeed') + ': ' + data.current.wind_speed_10m + ' ' +
-            data.current_units.wind_speed_10m + '<br>' +
-            translate('precipitation') + ': ' + data.current.precipitation + ' ' +
-            data.current_units.precipitation + '<br>' +
-            translate('snowfall') + ': ' + data.current.snowfall + ' ' +
-            data.current_units.snowfall
-          )
+          .setContent(weatherContent(data, place.name))
           .addTo(map);
       })
       .catch(function (error) {
@@ -791,7 +824,11 @@ function renderPlaceLayers() {
       },
       onEachFeature: function (feature, layer) {
         const p = feature.properties;
-        bindWeatherToLayer(layer, p.titre_lieu || 'selected community place');
+        layer.on('click', function (event) {
+          if (event.originalEvent) {
+            L.DomEvent.stopPropagation(event.originalEvent);
+          }
+        });
         layer.bindPopup(
           '<strong>' + (p.titre_lieu || 'Unnamed place') + '</strong><br>' +
           translate('address') + ': ' + (p.adresse_principale || translate('notAvailable')) + '<br>' +
@@ -804,17 +841,22 @@ function renderPlaceLayers() {
             ? '<br><a href="' + p.url_fiche +
               '" target="_blank" rel="noopener">' + translate('moreInformation') + '</a>'
             : '') +
-          '<br><button type="button" class="nearest-options-button">' +
+          '<br><span class="popup-action-buttons"><button type="button" class="nearest-options-button">' +
           translate('nearestButton') + '</button>' +
-          '<div class="nearest-options-details" hidden></div>',
+          '<button type="button" class="weather-options-button">' +
+          translate('weatherButton') + '</button></span>' +
+          '<div class="nearest-options-details" hidden></div>' +
+          '<div class="weather-options-details" hidden></div>',
           { closeButton: true }
         );
         layer.on('popupopen', function (event) {
           const popupElement = event.popup.getElement();
           const button = popupElement.querySelector('.nearest-options-button');
           const details = popupElement.querySelector('.nearest-options-details');
+          const weatherButton = popupElement.querySelector('.weather-options-button');
+          const weatherDetails = popupElement.querySelector('.weather-options-details');
 
-          if (!button || !details) {
+          if (!button || !details || !weatherButton || !weatherDetails) {
             return;
           }
 
@@ -829,6 +871,20 @@ function renderPlaceLayers() {
             }
           });
           button.setAttribute('aria-expanded', 'false');
+          L.DomEvent.disableClickPropagation(weatherButton);
+          weatherButton.addEventListener('click', function () {
+            const expanded = !weatherDetails.hidden;
+            weatherDetails.hidden = expanded;
+            weatherButton.setAttribute('aria-expanded', String(!expanded));
+            if (!expanded) {
+              loadWeatherIntoPanel(
+                layer.getLatLng(),
+                p.titre_lieu || 'selected community place',
+                weatherDetails
+              );
+            }
+          });
+          weatherButton.setAttribute('aria-expanded', 'false');
         });
       }
     });
