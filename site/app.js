@@ -169,6 +169,9 @@ function makeWeatherPopupDraggable(popup) {
     return;
   }
 
+  container.style.bottom = 'auto';
+  L.DomEvent.disableClickPropagation(handle);
+
   let startX;
   let startY;
   let startLeft;
@@ -181,6 +184,8 @@ function makeWeatherPopupDraggable(popup) {
     startY = event.clientY;
     startLeft = container.offsetLeft;
     startTop = container.offsetTop;
+    container.style.left = startLeft + 'px';
+    container.style.top = startTop + 'px';
     handle.setPointerCapture(event.pointerId);
 
     function move(pointerEvent) {
