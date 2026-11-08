@@ -47,19 +47,6 @@ Other ideas:
 sort of like a editable front end page?
 
 -------------------------------------------
-To Solve:
-Nedd to find a way through api keys with 211 grand montreal 
-
-
-
-In site/app.js, add a search box above the map that filters the features
-in [layer variable] by the property [field]. Matching ignores capitals and
-accents. Show '[n] of [total] shown' under the box. If nothing matches,
-show 'No match' and keep the full map. These three tests must pass:
-1. [normal case]  2. [edge case]  3. [edge case].
-Do not add libraries. Before writing code, explain your plan in five
-lines. Then show the diff and say which lines are the handler.
-
 
 git status
 git add site/mtl_places_clean_output.geojson
