@@ -56,7 +56,8 @@ const translations = {
     nearestOptions: 'Nearest emergency options',
     busStop: 'Bus stop',
     communityCentre: 'Community centre',
-    distance: 'Distance'
+    distance: 'Distance',
+    nearestButton: 'For nearest options'
   },
   fr: {
     title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
@@ -101,7 +102,8 @@ const translations = {
     nearestOptions: 'Options d’urgence les plus proches',
     busStop: 'Arrêt d’autobus',
     communityCentre: 'Centre communautaire',
-    distance: 'Distance'
+    distance: 'Distance',
+    nearestButton: 'Pour les options les plus proches'
   }
 };
 
@@ -132,7 +134,7 @@ function formatDistance(metres) {
       : (metres / 1000).toFixed(2) + ' km';
   }
 
-function updateNearestRecommendations(latlng) {
+function updateNearestRecommendations(latlng, targetPanel) {
     lastRecommendationPoint = latlng;
     if (!stopFeatures.length || !placesData) {
       return;
@@ -191,13 +193,15 @@ function updateNearestRecommendations(latlng) {
         escapeHtml(formatDistance(destination.distance)) + ')</li>';
     }).join('');
 
-    const panel = document.getElementById('nearest-recommendations');
+    const panel = targetPanel || document.getElementById('nearest-recommendations');
     if (panel) {
-      panel.innerHTML = '<h2>' + translate('nearestOptions') + '</h2>' +
+      panel.innerHTML = (targetPanel ? '' : '<h2>' + translate('nearestOptions') + '</h2>') +
         '<div>' + translate('distance') + ': ' +
         (currentLanguage === 'fr' ? 'distance à vol d’oiseau' : 'straight-line estimate') +
         '</div><ul>' + list + '</ul>';
-      panel.hidden = false;
+      if (!targetPanel) {
+        panel.hidden = false;
+      }
     }
   }
 
@@ -792,9 +796,32 @@ function renderPlaceLayers() {
           (p.url_fiche
             ? '<br><a href="' + p.url_fiche +
               '" target="_blank" rel="noopener">' + translate('moreInformation') + '</a>'
-            : ''),
+            : '') +
+          '<br><button type="button" class="nearest-options-button">' +
+          translate('nearestButton') + '</button>' +
+          '<div class="nearest-options-details" hidden></div>',
           { closeButton: true }
         );
+        layer.on('popupopen', function (event) {
+          const popupElement = event.popup.getElement();
+          const button = popupElement.querySelector('.nearest-options-button');
+          const details = popupElement.querySelector('.nearest-options-details');
+
+          if (!button || !details) {
+            return;
+          }
+
+          L.DomEvent.disableClickPropagation(button);
+          button.addEventListener('click', function () {
+            const expanded = !details.hidden;
+            details.hidden = expanded;
+            button.setAttribute('aria-expanded', String(!expanded));
+            if (!expanded) {
+              updateNearestRecommendations(layer.getLatLng(), details);
+            }
+          });
+          button.setAttribute('aria-expanded', 'false');
+        });
       }
     });
 
