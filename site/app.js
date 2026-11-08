@@ -504,9 +504,10 @@ function renderPlaceLayers() {
         const p = feature.properties;
         bindWeatherToLayer(layer, p.titre_lieu || 'selected community place');
         layer.bindPopup(
+          'Address: ' + (p.adresse_principale || 'Not available') + '<br>' +
           '<strong>' + (p.titre_lieu || 'Unnamed place') + '</strong><br>' +
           'Type: ' + (p.types || 'Not available') + '<br>' +
-          'Address: ' + (p.adresse_principale || 'Not available') + '<br>' +
+          'Installation: ' + (p.types || 'Not available') + '<br>' +
           'Borough: ' + (p.arrondissements || 'Not available') + '<br>' +
           'Description: ' + (p.description || 'Not available') + '<br>' +
           'Hours of Service: ' + (p.statut_ouverture || 'Not available') + '<br>' +
