@@ -33,20 +33,8 @@ jobs:
           cp mtl_bound.geojson stops_clean_output.geojson \
             mtl_places_clean_output.geojson shapes.csv dist/
           mkdir -p dist/site
-          cat > dist/site/index.html <<'EOF'
-          <!doctype html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8">
-            <meta http-equiv="refresh" content="0;url=../">
-            <title>Redirecting to the map</title>
-          </head>
-          <body>
-            <p><a href="../">Open the map</a></p>
-            <script>window.location.replace('../');</script>
-          </body>
-          </html>
-          EOF
+          cp site/index.html site/app.js site/style.css dist/site/
+          cp -r site/vendor dist/site/
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
