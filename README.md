@@ -94,7 +94,7 @@ Not availble data is written in po up or in a sentence |
 | 4. The edge 
 | PASSED | No console break or red error for edge case | This was fixed with lab 7 test case 3 re-run checks|
 
-| 5. The data does not come | ... | the url showned in red but no change happened on the private page |
+| 5. The data does not come | PASSED | blocked data request shows a visible message that the map data did not load |
 
 | 6. On a phone (size view and my phone) 
 | ... | no change |
@@ -103,8 +103,7 @@ Not availble data is written in po up or in a sentence |
 | PASSED | Ran tab on my git pages stie | All my tabs pass as buttons and fuction as buttons |
 
 | 8. Accessibility audit 
-| Passed | Ran accecibility and lighthouse feature | Shows accesbility 100, no red errors.
-
+| Passed | Ran accessability and lighthouse feature | Shows accesbility 100, no red errors.
 
 
 

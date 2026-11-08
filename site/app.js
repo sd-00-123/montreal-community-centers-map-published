@@ -6,6 +6,19 @@ const map = L.map('map', { preferCanvas: true }).setView([45.45, -73.7], 10.45);
 
 // Support both the current root deployment and the legacy /site/ URL.
 const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
+let dataLoadError = false;
+
+function showDataLoadError(dataFile) {
+  const status = document.getElementById('status');
+  dataLoadError = true;
+
+  if (status) {
+    status.textContent =
+      'The map data did not load because the requested URL is blocked or unavailable (' +
+      dataFile + ').';
+    status.classList.add('status-error');
+  }
+}
 
 // Add OpenStreetMap as the background tile layer.
 const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -625,8 +638,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
     setupBoroughFilter();
   })
   .catch(function (err) {
-    document.getElementById('status').textContent +=
-      '<br>Could not load mtl_bound.geojson.';
+    showDataLoadError('mtl_bound.geojson');
 
     console.error(err);
   });
@@ -749,8 +761,10 @@ Promise.all([
     stopsLayer.addTo(map);
 
     // Report how many features were displayed.
-    document.getElementById('status').textContent =
-      shown.features.length + ' of ' + stopsData.features.length + ' stops shown';
+    if (!dataLoadError) {
+      document.getElementById('status').textContent =
+        shown.features.length + ' of ' + stopsData.features.length + ' stops shown';
+    }
 
     // Build the transit route layer from the second dataset.
     const grouped = {};
@@ -811,12 +825,13 @@ Promise.all([
 
     shapesLayer.addTo(map);
 
-    document.getElementById('status').textContent +=
-      '<br>' + lineFeatures.length + ' transit shapes displayed';
+    if (!dataLoadError) {
+      document.getElementById('status').textContent +=
+        '\n' + lineFeatures.length + ' transit shapes displayed';
+    }
   })
   .catch(function (err) {
-    document.getElementById('status').textContent +=
-      '<br>Could not load transit data. Open the console (F12) for details.';
+    showDataLoadError('stops_clean_output.geojson or shapes.csv');
 
     console.error(err);
   });
@@ -866,8 +881,10 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
     renderPlaceLayers();
     updatePlaceCount();
 
-    document.getElementById('status').textContent =
-      placesData.features.length + ' of ' + data.features.length + ' places shown';
+    if (!dataLoadError) {
+      document.getElementById('status').textContent =
+        placesData.features.length + ' of ' + data.features.length + ' places shown';
+    }
 
     const placeSearch = document.getElementById('place-search');
     placeSearch.addEventListener('input', function (event) {
@@ -892,8 +909,7 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
     });
   })
   .catch(function (err) {
-    document.getElementById('status').textContent =
-      'Could not load mtl_places_clean_output.geojson. Open the console (F12) for details.';
+    showDataLoadError('mtl_places_clean_output.geojson');
 
     console.error(err);
   });
