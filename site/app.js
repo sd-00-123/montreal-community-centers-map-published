@@ -768,18 +768,22 @@ function updatePlacePointSizes() {
 }
 
 function formatHoursTable(hours) {
+  const summary = '<summary>' + translate('hours') + '</summary>';
+
   if (!hours) {
-    return '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
+    return '<details class="hours-details">' + summary +
+      '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
       '<tbody><tr><th scope="row">' + translate('hours') + '</th><td>' +
       translate('notAvailable') + '</td></tr></tbody>' +
-      '</table>';
+      '</table></details>';
   }
 
   const schedule = hours.match(/^([^:]+):\s*\[(.*)\]$/);
   if (!schedule) {
-    return '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
+    return '<details class="hours-details">' + summary +
+      '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
       '<tbody><tr><th scope="row">' + translate('type') + '</th><td>' + hours + '</td></tr></tbody>' +
-      '</table>';
+      '</table></details>';
   }
 
   const rows = schedule[2].split(/,\s*(?=[^,]+ \d{2}:\d{2}-)/).map(function (entry) {
@@ -788,11 +792,12 @@ function formatHoursTable(hours) {
       '</th><td>' + entry.slice(separator + 1) + '</td></tr>';
   }).join('');
 
-  return '<table class="hours-table"><caption>' +
+  return '<details class="hours-details">' + summary +
+    '<table class="hours-table"><caption>' +
     (currentLanguage === 'fr' ? translate('regularSchedule') : schedule[1]) + '</caption>' +
     '<thead><tr><th scope="col">' + translate('hoursDay') +
     '</th><th scope="col">' + translate('hoursTime') + '</th></tr></thead>' +
-    '<tbody>' + rows + '</tbody></table>';
+    '<tbody>' + rows + '</tbody></table></details>';
 }
 
 function renderPlaceLayers() {

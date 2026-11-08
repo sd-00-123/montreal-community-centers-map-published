@@ -170,6 +170,13 @@ h2 { font-size: 20px; margin-top: 28px; }
   font-weight: bold;
   text-align: left;
 }
+.hours-details {
+  margin: 8px 0;
+}
+.hours-details summary {
+  cursor: pointer;
+  font-weight: bold;
+}
 .hours-table th,
 .hours-table td {
   border: 1px solid #d8dce8;
