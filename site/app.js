@@ -473,6 +473,31 @@ function updatePlacePointSizes() {
   });
 }
 
+function formatHoursTable(hours) {
+  if (!hours) {
+    return '<table class="hours-table"><caption>Hours of Service</caption>' +
+      '<tbody><tr><th scope="row">Hours</th><td>Not available</td></tr></tbody>' +
+      '</table>';
+  }
+
+  const schedule = hours.match(/^([^:]+):\s*\[(.*)\]$/);
+  if (!schedule) {
+    return '<table class="hours-table"><caption>Hours of Service</caption>' +
+      '<tbody><tr><th scope="row">Status</th><td>' + hours + '</td></tr></tbody>' +
+      '</table>';
+  }
+
+  const rows = schedule[2].split(/,\s*(?=[^,]+ \d{2}:\d{2}-)/).map(function (entry) {
+    const separator = entry.indexOf(' ');
+    return '<tr><th scope="row">' + entry.slice(0, separator) +
+      '</th><td>' + entry.slice(separator + 1) + '</td></tr>';
+  }).join('');
+
+  return '<table class="hours-table"><caption>' + schedule[1] + '</caption>' +
+    '<thead><tr><th scope="col">Day</th><th scope="col">Time</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody></table>';
+}
+
 function renderPlaceLayers() {
   if (!placesData || !placeCategories) {
     return;
@@ -509,7 +534,7 @@ function renderPlaceLayers() {
           'Type: ' + (p.types || 'Not available') + '<br>' +
           'Installation: ' + (p.installations || 'Not available') + '<br>' +
           'Borough: ' + (p.arrondissements || 'Not available') + '<br>' +
-          'Hours of Service: ' + (p.horaire_par_jour || 'Not available') + '<br>' +
+          formatHoursTable(p.horaire_par_jour) +
           'Website: ' + (p.url_fiche || 'Not available') + '<br>' +
           (p.url_fiche
             ? '<br><a href="' + p.url_fiche +

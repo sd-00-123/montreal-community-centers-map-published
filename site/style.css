@@ -64,6 +64,21 @@ h2 { font-size: 20px; margin-top: 28px; }
   font-size: 15px;
   margin: 4px 0 0;
 }
+.hours-table {
+  border-collapse: collapse;
+  margin: 8px 0;
+  width: 100%;
+}
+.hours-table caption {
+  font-weight: bold;
+  text-align: left;
+}
+.hours-table th,
+.hours-table td {
+  border: 1px solid #d8dce8;
+  padding: 3px 6px;
+  text-align: left;
+}
 .weather-status {
   border-radius: 4px;
   font-weight: bold;
