@@ -85,6 +85,16 @@ h2 { font-size: 20px; margin-top: 28px; }
   margin: 6px 0;
   padding: 3px 6px;
 }
+.weather-popup .weather-drag-handle {
+  cursor: move;
+  font-weight: bold;
+  margin-bottom: 6px;
+  padding-right: 20px;
+  user-select: none;
+}
+.weather-popup .leaflet-popup-content {
+  margin-top: 12px;
+}
 .weather-good { background: #b7e4c7; color: #14532d; }
 .weather-caution { background: #fed7aa; color: #7c2d12; }
 .weather-bad { background: #fecaca; color: #7f1d1d; }
