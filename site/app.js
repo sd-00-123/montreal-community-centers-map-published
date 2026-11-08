@@ -7,15 +7,147 @@ const map = L.map('map', { preferCanvas: true }).setView([45.45, -73.7], 10.45);
 // Support both the current root deployment and the legacy /site/ URL.
 const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
 let dataLoadError = false;
+let currentLanguage = 'en';
+
+const translations = {
+  en: {
+    title: 'Montreal Elderly Community and Recreation Centers / Places',
+    mapDescription: 'Use the map controls to zoom and move around the map. Select a point or route to view more details. Use the map to identify the location of recreation and community centers and plan transit to these locations accordingly. With this map, you can easily find the nearest centers and plan your route.',
+    searchLabel: 'Search',
+    searchPlaceholder: 'Search by name, borough, or postal code',
+    filterHeading: 'Map filters',
+    boroughLabel: 'Filter and zoom to borough',
+    allBoroughs: 'All boroughs',
+    installationType: 'Installation type',
+    parks: 'Parks and gardens',
+    sports: 'Sports and recreation',
+    community: 'Community centres',
+    loadingMap: 'Loading map...',
+    mapNote: 'This map is a basic version, with cleaned data and organised for bare minimum use. Future versions will hopefully include more detailed information about each Center, such as senior age ranges at comunity centers, and condition.',
+    noMatch: 'No match',
+    placesShown: 'places shown',
+    hours: 'Hours of Service',
+    address: 'Address',
+    type: 'Type',
+    installation: 'Installation',
+    borough: 'Borough',
+    website: 'Website',
+    moreInformation: 'More information',
+    weatherOnlyMontreal: 'Weather is available only on Montreal Island.',
+    weatherLoading: 'Weather will load in 3 seconds...',
+    weatherAt: 'Weather at',
+    good: 'Good',
+    caution: 'Caution',
+    bad: 'Bad',
+    temperature: 'Temperature',
+    windSpeed: 'Wind speed',
+    precipitation: 'Precipitation',
+    snowfall: 'Snowfall',
+    notAvailable: 'Not available',
+    regularSchedule: 'Regular schedule',
+    hoursDay: 'Day',
+    hoursTime: 'Time',
+    switchToFrench: 'Switch to French',
+    switchToEnglish: 'Switch to English'
+  },
+  fr: {
+    title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
+    mapDescription: 'Utilisez les commandes de la carte pour zoomer et vous déplacer. Sélectionnez un point ou un trajet pour voir plus de détails. Utilisez la carte pour trouver les centres de loisirs et communautaires et planifier votre trajet.',
+    searchLabel: 'Rechercher',
+    searchPlaceholder: 'Rechercher par nom, arrondissement ou code postal',
+    filterHeading: 'Filtres de la carte',
+    boroughLabel: 'Filtrer et zoomer sur un arrondissement',
+    allBoroughs: 'Tous les arrondissements',
+    installationType: 'Type d’installation',
+    parks: 'Parcs et jardins',
+    sports: 'Sports et loisirs',
+    community: 'Centres communautaires',
+    loadingMap: 'Chargement de la carte...',
+    mapNote: 'Cette carte est une version de base, avec des données nettoyées et organisées pour une utilisation minimale. Les prochaines versions pourraient inclure plus de renseignements sur chaque centre, notamment les groupes d’âge et l’état des lieux.',
+    noMatch: 'Aucun résultat',
+    placesShown: 'lieux affichés',
+    hours: 'Heures de service',
+    address: 'Adresse',
+    type: 'Type',
+    installation: 'Installation',
+    borough: 'Arrondissement',
+    website: 'Site Web',
+    moreInformation: 'Plus d’informations',
+    weatherOnlyMontreal: 'La météo est disponible uniquement sur l’île de Montréal.',
+    weatherLoading: 'La météo sera chargée dans 3 secondes...',
+    weatherAt: 'Météo à',
+    good: 'Bon',
+    caution: 'Prudence',
+    bad: 'Mauvais',
+    temperature: 'Température',
+    windSpeed: 'Vitesse du vent',
+    precipitation: 'Précipitations',
+    snowfall: 'Neige',
+    notAvailable: 'Non disponible',
+    regularSchedule: 'Horaire régulier',
+    hoursDay: 'Jour',
+    hoursTime: 'Heure',
+    switchToFrench: 'Passer au français',
+    switchToEnglish: 'Passer à l’anglais'
+  }
+};
+
+function translate(key) {
+  return translations[currentLanguage][key] || translations.en[key] || key;
+}
+
+function applyLanguage() {
+  document.documentElement.lang = currentLanguage;
+  document.querySelectorAll('[data-i18n]').forEach(function (element) {
+    element.textContent = translate(element.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function (element) {
+    element.placeholder = translate(element.dataset.i18nPlaceholder);
+  });
+
+  const button = document.getElementById('language-toggle');
+  if (button) {
+    button.textContent = currentLanguage === 'en' ? 'FR' : 'EN';
+    button.setAttribute(
+      'aria-label',
+      currentLanguage === 'en' ? translate('switchToFrench') : translate('switchToEnglish')
+    );
+  }
+}
+
+function setupLanguageToggle() {
+  const button = document.getElementById('language-toggle');
+  if (!button) {
+    return;
+  }
+
+  button.addEventListener('click', function () {
+    currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
+    clearTimeout(weatherRequestTimer);
+    map.closePopup();
+    weatherPopup = null;
+    weatherLoadingPopup = null;
+    applyLanguage();
+    renderPlaceLayers();
+    updatePlaceCount();
+    map.removeControl(legend);
+    legend.addTo(map);
+  });
+  applyLanguage();
+}
+
+setupLanguageToggle();
 
 function showDataLoadError(dataFile) {
   const status = document.getElementById('status');
   dataLoadError = true;
 
   if (status) {
-    status.textContent =
-      'The map data file ' + dataFile +
-      ' did not load because the requested URL is blocked or unavailable.';
+    status.textContent = currentLanguage === 'fr'
+      ? 'Le fichier de données ' + dataFile +
+        ' n’a pas été chargé, car l’URL demandée est bloquée ou indisponible.'
+      : 'The map data file ' + dataFile +
+        ' did not load because the requested URL is blocked or unavailable.';
     status.classList.add('status-error');
   }
 }
@@ -175,7 +307,7 @@ function showWeatherPopup(latlng, placeName) {
     }
     L.popup()
       .setLatLng(latlng)
-      .setContent('Weather is available only on Montreal Island.')
+      .setContent(translate('weatherOnlyMontreal'))
       .openOn(map);
     return;
   }
@@ -202,7 +334,7 @@ function showWeatherPopup(latlng, placeName) {
     autoClose: false
   })
     .setLatLng(latlng)
-    .setContent('Weather will load in 3 seconds...')
+    .setContent(translate('weatherLoading'))
     .addTo(map);
   const loadingPopup = weatherLoadingPopup;
   weatherRequestTimer = setTimeout(function () {
@@ -237,21 +369,21 @@ function showWeatherPopup(latlng, placeName) {
         })
           .setLatLng(latlng)
           .setContent(
-            '<strong>Weather at ' + place.name + '</strong><br>' +
+            '<strong>' + translate('weatherAt') + ' ' + place.name + '</strong><br>' +
             '<div class="weather-status ' + weather.statusClass + '">' +
             weather.status + '</div>' +
             '<div class="weather-scale" aria-label="Weather quality scale">' +
             '<span class="weather-marker" style="left: ' + (100 - weather.score) +
             '%"></span></div>' +
-            '<div class="weather-scale-labels"><span>Good</span>' +
-            '<span>Caution</span><span>Bad</span></div>' +
-            'Temperature: ' + data.current.temperature_2m + ' ' +
+            '<div class="weather-scale-labels"><span>' + translate('good') + '</span>' +
+            '<span>' + translate('caution') + '</span><span>' + translate('bad') + '</span></div>' +
+            translate('temperature') + ': ' + data.current.temperature_2m + ' ' +
             data.current_units.temperature_2m + '<br>' +
-            'Wind speed: ' + data.current.wind_speed_10m + ' ' +
+            translate('windSpeed') + ': ' + data.current.wind_speed_10m + ' ' +
             data.current_units.wind_speed_10m + '<br>' +
-            'Precipitation: ' + data.current.precipitation + ' ' +
+            translate('precipitation') + ': ' + data.current.precipitation + ' ' +
             data.current_units.precipitation + '<br>' +
-            'Snowfall: ' + data.current.snowfall + ' ' +
+            translate('snowfall') + ': ' + data.current.snowfall + ' ' +
             data.current_units.snowfall
           )
           .addTo(map);
@@ -260,7 +392,10 @@ function showWeatherPopup(latlng, placeName) {
         if (weatherLoadingPopup !== loadingPopup) {
           return;
         }
-        loadingPopup.setContent('Could not get weather: ' + error.message);
+        loadingPopup.setContent(
+          (currentLanguage === 'fr' ? 'Impossible de récupérer la météo : ' : 'Could not get weather: ') +
+          error.message
+        );
         console.error('Weather API error:', error);
       });
   }, 3000);
@@ -450,8 +585,9 @@ function updatePlaceCount() {
   }).length;
 
   count.textContent = shown === 0 && placeSearchTerm
-    ? 'No match'
-    : shown + ' of ' + placesData.features.length + ' places shown';
+    ? translate('noMatch')
+    : shown + ' ' + (currentLanguage === 'fr' ? 'sur ' : 'of ') +
+      placesData.features.length + ' ' + translate('placesShown');
 }
 
 function getPlaceRadius(zoom) {
@@ -475,15 +611,16 @@ function updatePlacePointSizes() {
 
 function formatHoursTable(hours) {
   if (!hours) {
-    return '<table class="hours-table"><caption>Hours of Service</caption>' +
-      '<tbody><tr><th scope="row">Hours</th><td>Not available</td></tr></tbody>' +
+    return '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
+      '<tbody><tr><th scope="row">' + translate('hours') + '</th><td>' +
+      translate('notAvailable') + '</td></tr></tbody>' +
       '</table>';
   }
 
   const schedule = hours.match(/^([^:]+):\s*\[(.*)\]$/);
   if (!schedule) {
-    return '<table class="hours-table"><caption>Hours of Service</caption>' +
-      '<tbody><tr><th scope="row">Status</th><td>' + hours + '</td></tr></tbody>' +
+    return '<table class="hours-table"><caption>' + translate('hours') + '</caption>' +
+      '<tbody><tr><th scope="row">' + translate('type') + '</th><td>' + hours + '</td></tr></tbody>' +
       '</table>';
   }
 
@@ -493,8 +630,10 @@ function formatHoursTable(hours) {
       '</th><td>' + entry.slice(separator + 1) + '</td></tr>';
   }).join('');
 
-  return '<table class="hours-table"><caption>' + schedule[1] + '</caption>' +
-    '<thead><tr><th scope="col">Day</th><th scope="col">Time</th></tr></thead>' +
+  return '<table class="hours-table"><caption>' +
+    (currentLanguage === 'fr' ? translate('regularSchedule') : schedule[1]) + '</caption>' +
+    '<thead><tr><th scope="col">' + translate('hoursDay') +
+    '</th><th scope="col">' + translate('hoursTime') + '</th></tr></thead>' +
     '<tbody>' + rows + '</tbody></table>';
 }
 
@@ -530,15 +669,15 @@ function renderPlaceLayers() {
         bindWeatherToLayer(layer, p.titre_lieu || 'selected community place');
         layer.bindPopup(
           '<strong>' + (p.titre_lieu || 'Unnamed place') + '</strong><br>' +
-          'Address: ' + (p.adresse_principale || 'Not available') + '<br>' +
-          'Type: ' + (p.types || 'Not available') + '<br>' +
-          'Installation: ' + (p.installations || 'Not available') + '<br>' +
-          'Borough: ' + (p.arrondissements || 'Not available') + '<br>' +
+          translate('address') + ': ' + (p.adresse_principale || translate('notAvailable')) + '<br>' +
+          translate('type') + ': ' + (p.types || translate('notAvailable')) + '<br>' +
+          translate('installation') + ': ' + (p.installations || translate('notAvailable')) + '<br>' +
+          translate('borough') + ': ' + (p.arrondissements || translate('notAvailable')) + '<br>' +
           formatHoursTable(p.horaire_par_jour) +
-          'Website: ' + (p.url_fiche || 'Not available') + '<br>' +
+          translate('website') + ': ' + (p.url_fiche || translate('notAvailable')) + '<br>' +
           (p.url_fiche
             ? '<br><a href="' + p.url_fiche +
-              '" target="_blank" rel="noopener">More information</a>'
+              '" target="_blank" rel="noopener">' + translate('moreInformation') + '</a>'
             : ''),
           { closeButton: true }
         );
@@ -678,8 +817,17 @@ const legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function () {
   const div = L.DomUtil.create('div', 'legend');
+  const categoryLabels = {
+    'Arts, Culture and Community Centers': currentLanguage === 'fr'
+      ? 'Centres communautaires, culture et arts'
+      : 'Arts, Culture and Community Centers',
+    'Parks and gardens': translate('parks'),
+    'Sports and recreation': translate('sports'),
+    'Transit Bus Lines': currentLanguage === 'fr' ? 'Lignes d’autobus' : 'Transit Bus Lines',
+    ' Transit Bus Stops': currentLanguage === 'fr' ? 'Arrêts d’autobus' : 'Transit Bus Stops'
+  };
   const categoryItems = Object.keys(colours).map(function (k) {
-    return '<span style="background:' + colours[k] + '"></span>' + k;
+    return '<span style="background:' + colours[k] + '"></span>' + categoryLabels[k];
   }).join('<br>');
   const densityRows = [
     [100, '100 or more'],
@@ -694,9 +842,11 @@ legend.onAdd = function () {
   }).join('<br>');
 
   div.innerHTML =
-    '<strong>Community centres per borough</strong><br>' +
+    '<strong>' + (currentLanguage === 'fr'
+      ? 'Centres communautaires par arrondissement'
+      : 'Community centres per borough') + '</strong><br>' +
     densityItems +
-    '<br><strong>Map categories</strong><br>' +
+    '<br><strong>' + (currentLanguage === 'fr' ? 'Catégories de la carte' : 'Map categories') + '</strong><br>' +
     categoryItems;
   return div;
 };

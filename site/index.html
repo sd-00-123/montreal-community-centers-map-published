@@ -10,54 +10,60 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="language-control">
+    <button id="language-toggle" type="button" aria-label="Switch to French">
+      FR
+    </button>
+  </div>
   <div class="page">
     <main class="story">
-      <h1>Montreal Elderly Community and Recreation Centers / Places</h1>
-      <p id="map-description" class="visually-hidden">
+      <h1 data-i18n="title">Montreal Elderly Community and Recreation Centers / Places</h1>
+      <p id="map-description" class="visually-hidden" data-i18n="mapDescription">
          Use the map controls to zoom
         and move around the map. Select a point or route to view more details. Use the map to identify the location of 
         recreation and community centers and plan transit to these locations accordingly. 
         With this map, you can easily find the nearest centers and plan your route. 
       </p>
       <div class="search-control">
-        <label for="place-search">Search</label>
+        <label for="place-search" data-i18n="searchLabel">Search</label>
         <input
           id="place-search"
           type="search"
+          data-i18n-placeholder="searchPlaceholder"
           placeholder="Search by name, borough, or postal code"
           autocomplete="off">
         <p id="place-count" aria-live="polite"></p>
       </div>
       <section class="filter-panel" aria-labelledby="filter-heading">
-        <h2 id="filter-heading">Map filters</h2>
+        <h2 id="filter-heading" data-i18n="filterHeading">Map filters</h2>
         <div class="borough-control">
-          <label for="borough-select">Filter and zoom to borough</label>
+          <label for="borough-select" data-i18n="boroughLabel">Filter and zoom to borough</label>
           <select id="borough-select">
-            <option value="">All boroughs</option>
+            <option value="" data-i18n="allBoroughs">All boroughs</option>
           </select>
         </div>
         <fieldset class="installation-filter">
-          <legend>Installation type</legend>
+          <legend data-i18n="installationType">Installation type</legend>
           <label>
             <input type="checkbox" data-category="Parks and gardens" checked>
-            Parks and gardens
+            <span data-i18n="parks">Parks and gardens</span>
           </label>
           <label>
             <input type="checkbox" data-category="Sports and recreation" checked>
-            Sports and recreation
+            <span data-i18n="sports">Sports and recreation</span>
           </label>
           <label>
             <input type="checkbox" data-category="Arts, culture and community" checked>
-            Community centres
+            <span data-i18n="community">Community centres</span>
           </label>
         </fieldset>
       </section>
       <p id="center"></p>
-      <p id="status" role="status" aria-live="assertive">Loading map...</p>
+      <p id="status" role="status" aria-live="assertive" data-i18n="loadingMap">Loading map...</p>
 
       <section>
 
-        <p></p>This map is a basic version, with cleaned data and organised for bare minimum use.
+        <p data-i18n="mapNote">This map is a basic version, with cleaned data and organised for bare minimum use.
           Future versions will hopefully include more detailed information about each 
           Center, such as senior age ranges at comunity centers, and condition.</p>
       </section> 
