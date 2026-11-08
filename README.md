@@ -97,13 +97,13 @@ Not availble data is written in po up or in a sentence |
 | 5. The data does not come | PASSED | blocked data request shows a visible message that the map data did not load |
 
 | 6. On a phone (size view and my phone) 
-| ... | no change |
+| PASSED | opened the webpage on my phone | no cut letters or sentences on the webpage |
 
 | 7. Mouse in my pocket 
 | PASSED | Ran tab on my git pages stie | All my tabs pass as buttons and fuction as buttons |
 
 | 8. Accessibility audit 
-| Passed | Ran accessability and lighthouse feature | Shows accesbility 100, no red errors.
+| PASSED | Ran accessability and lighthouse feature | Shows accesbility 100, no red errors.
 
 
 
