@@ -8,6 +8,9 @@ const map = L.map('map', { preferCanvas: true }).setView([45.45, -73.7], 10.45);
 const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
 let dataLoadError = false;
 let currentLanguage = 'en';
+let stopFeatures = [];
+let lastRecommendationPoint;
+let recommendationLayer = L.layerGroup().addTo(map);
 
 const translations = {
   en: {
@@ -49,6 +52,11 @@ const translations = {
     hoursTime: 'Time',
     switchToFrench: 'Switch to French',
     switchToEnglish: 'Switch to English'
+    ,
+    nearestOptions: 'Nearest emergency options',
+    busStop: 'Bus stop',
+    communityCentre: 'Community centre',
+    distance: 'Distance'
   },
   fr: {
     title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
@@ -89,8 +97,109 @@ const translations = {
     hoursTime: 'Heure',
     switchToFrench: 'Passer au français',
     switchToEnglish: 'Passer à l’anglais'
+    ,
+    nearestOptions: 'Options d’urgence les plus proches',
+    busStop: 'Arrêt d’autobus',
+    communityCentre: 'Centre communautaire',
+    distance: 'Distance'
   }
 };
+
+function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+function distanceInMetres(from, to) {
+    const earthRadius = 6371000;
+    const lat1 = from.lat * Math.PI / 180;
+    const lat2 = to.lat * Math.PI / 180;
+    const deltaLat = (to.lat - from.lat) * Math.PI / 180;
+    const deltaLon = (to.lng - from.lng) * Math.PI / 180;
+    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+      Math.cos(lat1) * Math.cos(lat2) *
+      Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+    return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+function formatDistance(metres) {
+    return metres < 1000
+      ? Math.round(metres) + ' m'
+      : (metres / 1000).toFixed(2) + ' km';
+  }
+
+function updateNearestRecommendations(latlng) {
+    lastRecommendationPoint = latlng;
+    if (!stopFeatures.length || !placesData) {
+      return;
+    }
+
+    recommendationLayer.clearLayers();
+    const destinations = stopFeatures.map(function (feature) {
+      return {
+        feature: feature,
+        latlng: L.latLng(
+          Number(feature.geometry.coordinates[1]),
+          Number(feature.geometry.coordinates[0])
+        ),
+        distance: distanceInMetres(latlng, {
+          lat: Number(feature.geometry.coordinates[1]),
+          lng: Number(feature.geometry.coordinates[0])
+        }),
+        label: feature.properties.stop_name || translate('busStop'),
+        type: translate('busStop'),
+        colour: '#2563eb'
+      };
+    }).sort(function (a, b) {
+      return a.distance - b.distance;
+    }).slice(0, 2);
+
+    const indoor = placesData.features.filter(function (feature) {
+      return feature.properties.types === 'Arts, culture and community';
+    }).map(function (feature) {
+      const lat = Number(feature.geometry.coordinates[1]);
+      const lng = Number(feature.geometry.coordinates[0]);
+      return {
+        feature: feature,
+        latlng: L.latLng(lat, lng),
+        distance: distanceInMetres(latlng, { lat: lat, lng: lng }),
+        label: feature.properties.titre_lieu || translate('communityCentre'),
+        type: translate('communityCentre'),
+        colour: '#b91c1c'
+      };
+    }).sort(function (a, b) {
+      return a.distance - b.distance;
+    })[0];
+
+    if (indoor) {
+      destinations.push(indoor);
+    }
+
+    const list = destinations.map(function (destination) {
+      recommendationLayer.addLayer(L.polyline(
+        [latlng, destination.latlng],
+        { color: destination.colour, weight: 3, opacity: 0.8 }
+      ));
+      return '<li><span class="recommendation-line" style="border-color:' +
+        destination.colour + '"></span><strong>' +
+        escapeHtml(destination.type) + ':</strong> ' +
+        escapeHtml(destination.label) + ' (' +
+        escapeHtml(formatDistance(destination.distance)) + ')</li>';
+    }).join('');
+
+    const panel = document.getElementById('nearest-recommendations');
+    if (panel) {
+      panel.innerHTML = '<h2>' + translate('nearestOptions') + '</h2>' +
+        '<div>' + translate('distance') + ': ' +
+        (currentLanguage === 'fr' ? 'distance à vol d’oiseau' : 'straight-line estimate') +
+        '</div><ul>' + list + '</ul>';
+      panel.hidden = false;
+    }
+  }
 
 function translate(key) {
   return translations[currentLanguage][key] || translations.en[key] || key;
@@ -130,6 +239,9 @@ function setupLanguageToggle() {
     applyLanguage();
     renderPlaceLayers();
     updatePlaceCount();
+    if (lastRecommendationPoint) {
+      updateNearestRecommendations(lastRecommendationPoint);
+    }
     map.removeControl(legend);
     legend.addTo(map);
   });
@@ -408,6 +520,7 @@ function bindWeatherToLayer(layer, placeName) {
     }
     setTimeout(function () {
       showWeatherPopup(event.latlng, placeName);
+      updateNearestRecommendations(event.latlng);
     }, 0);
   });
 }
@@ -415,6 +528,7 @@ function bindWeatherToLayer(layer, placeName) {
 // Show current weather for any location the reader clicks on the map.
 map.on('click', function (event) {
   showWeatherPopup(event.latlng, 'selected map location');
+  updateNearestRecommendations(event.latlng);
 });
 
 let boroughFeatures = [];
@@ -877,6 +991,10 @@ Promise.all([
   })
   .then(function (datasets) {
     const stopsData = datasets[0];
+    stopFeatures = stopsData.features;
+    if (lastRecommendationPoint && placesData) {
+      updateNearestRecommendations(lastRecommendationPoint);
+    }
     const shapeRows = datasets[1].trim().split(/\r?\n/);
     const shapeHeaders = shapeRows.shift().split(',');
     const shapesData = {
@@ -1029,6 +1147,9 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
       type: 'FeatureCollection',
       features: data.features.slice(0, LIMIT)
     };
+    if (lastRecommendationPoint && stopFeatures.length) {
+      updateNearestRecommendations(lastRecommendationPoint);
+    }
     calculateBoroughDensity(placesData.features);
 
     const parksLayer = L.layerGroup();
