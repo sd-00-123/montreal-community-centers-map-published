@@ -205,6 +205,14 @@ function updateNearestRecommendations(latlng, targetPanel) {
     }
   }
 
+function hideNearestRecommendations() {
+  const panel = document.getElementById('nearest-recommendations');
+  if (panel) {
+    panel.hidden = true;
+  }
+  recommendationLayer.clearLayers();
+}
+
 function translate(key) {
   return translations[currentLanguage][key] || translations.en[key] || key;
 }
@@ -524,7 +532,6 @@ function bindWeatherToLayer(layer, placeName) {
     }
     setTimeout(function () {
       showWeatherPopup(event.latlng, placeName);
-      updateNearestRecommendations(event.latlng);
     }, 0);
   });
 }
@@ -811,6 +818,7 @@ function renderPlaceLayers() {
             return;
           }
 
+          hideNearestRecommendations();
           L.DomEvent.disableClickPropagation(button);
           button.addEventListener('click', function () {
             const expanded = !details.hidden;
