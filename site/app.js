@@ -14,8 +14,8 @@ function showDataLoadError(dataFile) {
 
   if (status) {
     status.textContent =
-      'The map data did not load because the requested URL is blocked or unavailable (' +
-      dataFile + ').';
+      'The map data file ' + dataFile +
+      ' did not load because the requested URL is blocked or unavailable.';
     status.classList.add('status-error');
   }
 }
