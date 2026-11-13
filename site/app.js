@@ -19,6 +19,9 @@ const translations = {
     mapDescription: 'Use the map controls to zoom and move around the map. Select a point or route to view more details. Use the map to identify the location of recreation and community centers and plan transit to these locations accordingly. For directions, click on a maroon dot or community center, scroll to the bottom of the opened page, and click "GET ITINERARY".',
     searchLabel: 'Search',
     searchPlaceholder: 'Search by name, borough, or postal code',
+    searchAddressLoading: 'Looking up address...',
+    searchAddressNotFound: 'Address not found',
+    searchAddressError: 'Could not find that address',
     filterHeading: 'Map filters',
     boroughLabel: 'Filter and zoom to borough',
     allBoroughs: 'All boroughs',
@@ -68,6 +71,9 @@ const translations = {
     mapDescription: 'Utilisez les commandes de la carte pour zoomer et vous déplacer. Sélectionnez un point ou un trajet pour voir plus de détails. Utilisez la carte pour trouver les centres de loisirs et communautaires et planifier votre trajet. Pour obtenir un itinéraire, cliquez sur un point bordeaux ou un centre communautaire, faites défiler jusqu’au bas de la page ouverte, puis cliquez sur « GET ITINERARY ».',
     searchLabel: 'Rechercher',
     searchPlaceholder: 'Rechercher par nom, arrondissement ou code postal',
+    searchAddressLoading: 'Recherche de l’adresse...',
+    searchAddressNotFound: 'Adresse introuvable',
+    searchAddressError: 'Impossible de trouver cette adresse',
     filterHeading: 'Filtres de la carte',
     boroughLabel: 'Filtrer et zoomer sur un arrondissement',
     allBoroughs: 'Tous les arrondissements',
@@ -745,8 +751,208 @@ function featureMatchesSearch(feature) {
   }
 
   const properties = feature.properties;
-  return norm(properties.titre_lieu).includes(placeSearchTerm) ||
-    norm(properties.arrondissements).includes(placeSearchTerm);
+  return [
+    properties.titre_lieu,
+    properties.arrondissements,
+    properties.adresse_principale,
+    properties.code_postal,
+    properties.installations,
+    properties.types
+  ].some(function (value) {
+    return searchScore(placeSearchTerm, value) !== Infinity;
+  });
+}
+
+function editDistance(first, second) {
+  const distances = Array.from({ length: second.length + 1 }, function (_, index) {
+    return index;
+  });
+
+  for (let row = 1; row <= first.length; row += 1) {
+    let previous = distances[0];
+    distances[0] = row;
+    for (let column = 1; column <= second.length; column += 1) {
+      const current = distances[column];
+      distances[column] = first[row - 1] === second[column - 1]
+        ? previous
+        : Math.min(previous, distances[column - 1], current) + 1;
+      previous = current;
+    }
+  }
+
+  return distances[second.length];
+}
+
+function searchScore(query, candidate) {
+  const normalizedQuery = norm(query);
+  const normalizedCandidate = norm(candidate);
+  if (!normalizedQuery || !normalizedCandidate) {
+    return Infinity;
+  }
+  if (normalizedCandidate.includes(normalizedQuery)) {
+    return 0;
+  }
+
+  const queryTokens = normalizedQuery.split(/[\s,./-]+/).filter(Boolean);
+  const candidateTokens = normalizedCandidate.split(/[\s,./-]+/).filter(Boolean);
+  let score = 0;
+
+  for (let index = 0; index < queryTokens.length; index += 1) {
+    const queryToken = queryTokens[index];
+    let bestTokenScore = Infinity;
+    candidateTokens.forEach(function (candidateToken) {
+      if (queryToken.length > 2 && candidateToken.indexOf(queryToken.slice(0, 3)) === 0) {
+        bestTokenScore = Math.min(bestTokenScore, 0.25);
+        return;
+      }
+
+      const distance = editDistance(queryToken, candidateToken);
+      const allowedDistance = Math.max(1, Math.floor(queryToken.length * 0.35));
+      if (distance <= allowedDistance) {
+        bestTokenScore = Math.min(bestTokenScore, distance / queryToken.length);
+      }
+    });
+
+    if (bestTokenScore === Infinity) {
+      return Infinity;
+    }
+    score += bestTokenScore;
+  }
+
+  return score;
+}
+
+function updateSearchSuggestions(value) {
+  const datalist = document.getElementById('place-suggestions');
+  if (!datalist || !placesData) {
+    return;
+  }
+
+  const query = norm(value);
+  datalist.innerHTML = '';
+  if (query.length < 2) {
+    return;
+  }
+
+  const suggestions = [];
+  const seen = {};
+  placesData.features.forEach(function (feature) {
+    const properties = feature.properties;
+    const values = [
+      properties.titre_lieu,
+      properties.adresse_principale,
+      properties.arrondissements,
+      properties.code_postal
+    ];
+
+    values.forEach(function (value) {
+      const suggestion = String(value || '').trim();
+      if (!suggestion || seen[suggestion]) {
+        return;
+      }
+
+      const score = searchScore(query, suggestion);
+      if (score !== Infinity) {
+        seen[suggestion] = true;
+        suggestions.push({ value: suggestion, score: score });
+      }
+    });
+  });
+
+  suggestions.sort(function (first, second) {
+    return first.score - second.score || first.value.localeCompare(second.value);
+  });
+  suggestions.slice(0, 8).forEach(function (suggestion) {
+    const option = document.createElement('option');
+    option.value = suggestion.value;
+    datalist.appendChild(option);
+  });
+}
+
+function focusPlaceFeature(feature) {
+  if (!feature || !feature.geometry || feature.geometry.type !== 'Point') {
+    return;
+  }
+
+  const coordinates = feature.geometry.coordinates;
+  map.setView([coordinates[1], coordinates[0]], 15);
+  const categoryLayer = placeCategories[feature.properties.types];
+  if (!categoryLayer) {
+    return;
+  }
+
+  categoryLayer.eachLayer(function (layer) {
+    if (layer.feature === feature) {
+      layer.openPopup();
+    }
+  });
+}
+
+function findPlaceBySearchValue(value) {
+  const query = norm(value);
+  if (!query || !placesData) {
+    return null;
+  }
+
+  let bestMatch = null;
+  let bestScore = Infinity;
+  placesData.features.forEach(function (feature) {
+    const properties = feature.properties;
+    [properties.titre_lieu, properties.adresse_principale].forEach(function (candidate) {
+      const score = searchScore(query, candidate);
+      if (score < bestScore) {
+        bestScore = score;
+        bestMatch = feature;
+      }
+    });
+  });
+
+  return bestScore <= Math.max(1, query.split(/\s+/).length * 0.8)
+    ? bestMatch
+    : null;
+}
+
+function findMapLocation(value) {
+  const search = new URLSearchParams({
+    q: value.trim() + ', Montreal, Canada',
+    format: 'jsonv2',
+    limit: '1'
+  });
+  const url = 'https://nominatim.openstreetmap.org/search?' + search;
+  const count = document.getElementById('place-count');
+
+  if (count) {
+    count.textContent = translate('searchAddressLoading');
+  }
+
+  fetch(url)
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('HTTP ' + response.status);
+      }
+
+      return response.json();
+    })
+    .then(function (results) {
+      if (!results.length) {
+        if (count) {
+          count.textContent = translate('searchAddressNotFound');
+        }
+        return;
+      }
+
+      const location = results[0];
+      map.setView([Number(location.lat), Number(location.lon)], 16);
+      if (count) {
+        count.textContent = 'Map centered on ' + value.trim();
+      }
+    })
+    .catch(function (error) {
+      if (count) {
+        count.textContent = translate('searchAddressError');
+      }
+      console.error('Address lookup error:', error);
+    });
 }
 
 function updatePlaceCount() {
@@ -1317,6 +1523,7 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
     const placeSearch = document.getElementById('place-search');
     placeSearch.addEventListener('input', function (event) {
       const value = event.target.value.trim();
+      updateSearchSuggestions(value);
       if (isPostalCode(value)) {
         placeSearchTerm = '';
         renderPlaceLayers();
@@ -1330,9 +1537,22 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
       updatePlaceCount();
     });
     placeSearch.addEventListener('keydown', function (event) {
-      if (event.key === 'Enter' && isPostalCode(event.target.value)) {
-        event.preventDefault();
-        findPostalCode(event.target.value);
+      if (event.key !== 'Enter') {
+        return;
+      }
+
+      event.preventDefault();
+      const value = event.target.value.trim();
+      const place = findPlaceBySearchValue(value);
+      if (place) {
+        placeSearchTerm = norm(value);
+        renderPlaceLayers();
+        updatePlaceCount();
+        focusPlaceFeature(place);
+      } else if (isPostalCode(value)) {
+        findPostalCode(value);
+      } else if (value) {
+        findMapLocation(value);
       }
     });
   })

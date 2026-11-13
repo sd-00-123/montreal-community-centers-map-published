@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="style.css?v=borough-alpha-20261113">
+  <link rel="stylesheet" href="style.css?v=search-fuzzy-20261113">
 </head>
 <body>
   <div class="language-control">
@@ -29,9 +29,11 @@
         <input
           id="place-search"
           type="search"
+          list="place-suggestions"
           data-i18n-placeholder="searchPlaceholder"
           placeholder="Search by name, borough, or postal code"
           autocomplete="off">
+        <datalist id="place-suggestions"></datalist>
         <p id="place-count" aria-live="polite"></p>
       </div>
       <section class="filter-panel" aria-labelledby="filter-heading">
@@ -79,6 +81,6 @@
   </div>
   <script src="vendor/leaflet/leaflet.js"></script>
     <script src="vendor/markercluster/leaflet.markercluster.js"></script>
-    <script src="app.js?v=borough-alpha-20261113"></script>
+    <script src="app.js?v=search-fuzzy-20261113"></script>
 </body>
 </html>
