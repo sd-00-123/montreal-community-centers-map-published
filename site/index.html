@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.Default.css">
-  <link rel="stylesheet" href="style.css?v=metro-stops-20261113">
+  <link rel="stylesheet" href="style.css?v=details-panel-20261113">
 </head>
 <body>
   <div class="language-control">
@@ -22,7 +22,6 @@
          Use the map controls to zoom and move around the map.
         Select a point or route to view more details. Use the map to identify the location of
         recreation and community centers and plan transit to these locations accordingly.
-        For directions click on a Maroon Dot / community center > for more information > scroll down to the bottom of the opened page > click "GET ITINERARY"
       </p>
       <div class="search-control">
         <label for="place-search" data-i18n="searchLabel">Search</label>
@@ -60,6 +59,10 @@
           </label>
         </fieldset>
       </section>
+      <section id="place-details" class="place-details" aria-live="polite" hidden>
+        <h2 data-i18n="selectedPlace">Selected place</h2>
+        <div id="place-details-content"></div>
+      </section>
       <p id="center"></p>
       <p id="status" role="status" aria-live="assertive" data-i18n="loadingMap">Loading map...</p>
 
@@ -81,6 +84,6 @@
   </div>
   <script src="vendor/leaflet/leaflet.js"></script>
     <script src="vendor/markercluster/leaflet.markercluster.js"></script>
-    <script src="app.js?v=metro-stops-20261113"></script>
+    <script src="app.js?v=details-panel-20261113"></script>
 </body>
 </html>

@@ -23,6 +23,8 @@ const translations = {
     searchAddressLoading: 'Looking up address...',
     searchAddressNotFound: 'Address not found',
     searchAddressError: 'Could not find that address',
+    selectedPlace: 'Selected place',
+    description: 'Description',
     filterHeading: 'Map filters',
     boroughLabel: 'Filter and zoom to borough',
     allBoroughs: 'All boroughs',
@@ -77,6 +79,8 @@ const translations = {
     searchAddressLoading: 'Recherche de l’adresse...',
     searchAddressNotFound: 'Adresse introuvable',
     searchAddressError: 'Impossible de trouver cette adresse',
+    selectedPlace: 'Lieu sélectionné',
+    description: 'Description',
     filterHeading: 'Filtres de la carte',
     boroughLabel: 'Filtrer et zoomer sur un arrondissement',
     allBoroughs: 'Tous les arrondissements',
@@ -352,6 +356,9 @@ function setupLanguageToggle() {
     applyLanguage();
     renderPlaceLayers();
     updatePlaceCount();
+    if (selectedPlaceFeature) {
+      showPlaceDetails(selectedPlaceFeature);
+    }
     if (lastRecommendationPoint) {
       updateNearestRecommendations(lastRecommendationPoint);
     }
@@ -682,6 +689,7 @@ let boroughLayer;
 let boroughDensity = {};
 let boroughDensityVisible = true;
 let placeSearchTerm = '';
+let selectedPlaceFeature = null;
 
 // Update the page with a small JavaScript demonstration.
 const center = document.getElementById('center');
@@ -1060,6 +1068,30 @@ function updatePlaceCount() {
       placesData.features.length + ' ' + translate('placesShown');
 }
 
+function showPlaceDetails(feature) {
+  const panel = document.getElementById('place-details');
+  const content = document.getElementById('place-details-content');
+  if (!panel || !content) {
+    return;
+  }
+
+  selectedPlaceFeature = feature;
+  const properties = feature.properties;
+  const description = String(properties.description || translate('notAvailable'))
+    .replace(/\r?\n/g, '<br>');
+  content.innerHTML =
+    '<h3>' + escapeHtml(properties.titre_lieu || translate('notAvailable')) + '</h3>' +
+    '<p><strong>' + translate('description') + ':</strong><br>' +
+    escapeHtml(description).replace(/&lt;br&gt;/g, '<br>') + '</p>' +
+    '<p><strong>' + translate('address') + ':</strong> ' +
+    escapeHtml(properties.adresse_principale || translate('notAvailable')) + '<br>' +
+    '<strong>' + translate('type') + ':</strong> ' +
+    escapeHtml(properties.types || translate('notAvailable')) + '<br>' +
+    '<strong>' + translate('borough') + ':</strong> ' +
+    escapeHtml(properties.arrondissements || translate('notAvailable')) + '</p>';
+  panel.hidden = false;
+}
+
 function getPlaceRadius(zoom) {
   return Math.max(3, Math.min(8, 14 - (zoom * 0.6)));
 }
@@ -1145,6 +1177,7 @@ function renderPlaceLayers() {
           if (event.originalEvent) {
             L.DomEvent.stopPropagation(event.originalEvent);
           }
+          showPlaceDetails(feature);
         });
         layer.bindPopup(
           '<strong>' + (p.titre_lieu || 'Unnamed place') + '</strong><br>' +
@@ -1169,6 +1202,7 @@ function renderPlaceLayers() {
           { closeButton: true }
         );
         layer.on('popupopen', function (event) {
+          showPlaceDetails(feature);
           const popupElement = event.popup.getElement();
           const button = popupElement.querySelector('.nearest-options-button');
           const details = popupElement.querySelector('.nearest-options-details');
