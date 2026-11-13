@@ -59,7 +59,26 @@ h1, h2 { color: var(--accent); }
 }
 .nearest-recommendations h2 {
   font-size: 18px;
-  margin: 0 0 6px;
+  margin: 0;
+}
+.nearest-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.nearest-close-button {
+  background: transparent;
+  border: 0;
+  color: #1F2D5A;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.nearest-close-button:hover,
+.nearest-close-button:focus {
+  color: #b91c1c;
 }
 .nearest-recommendations ul {
   margin: 6px 0 0;

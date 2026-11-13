@@ -69,6 +69,7 @@ const translations = {
     park: 'Park',
     distance: 'Distance',
     nearestButton: 'For nearest options',
+    closeNearestOptions: 'Close nearest options',
     weatherButton: 'For weather conditions',
     googleMapsButton: 'Get Directions'
   },
@@ -126,6 +127,7 @@ const translations = {
     park: 'Parc',
     distance: 'Distance',
     nearestButton: 'Pour les options les plus proches',
+    closeNearestOptions: 'Fermer les options les plus proches',
     weatherButton: 'Pour les conditions météorologiques',
     googleMapsButton: 'Obtenir l’itinéraire'
   }
@@ -302,12 +304,18 @@ function updateNearestRecommendations(latlng, targetPanel) {
 
     const panel = targetPanel || document.getElementById('nearest-recommendations');
     if (panel) {
-      panel.innerHTML = (targetPanel ? '' : '<h2>' + translate('nearestOptions') + '</h2>') +
+      panel.innerHTML = (targetPanel ? '' :
+        '<div class="nearest-header"><h2>' + translate('nearestOptions') +
+        '</h2><button type="button" class="nearest-close-button" aria-label="' +
+        translate('closeNearestOptions') + '">&times;</button></div>') +
         '<div>' + translate('distance') + ': ' +
         (currentLanguage === 'fr' ? 'distance à vol d’oiseau' : 'straight-line estimate') +
         '</div><ul>' + list + '</ul>';
       if (!targetPanel) {
         panel.hidden = false;
+        const closeButton = panel.querySelector('.nearest-close-button');
+        L.DomEvent.disableClickPropagation(closeButton);
+        closeButton.addEventListener('click', hideNearestRecommendations);
       }
     }
   }
@@ -1227,6 +1235,7 @@ function renderPlaceLayers() {
             if (!expanded) {
               updateNearestRecommendations(layer.getLatLng(), details);
             }
+            updateNearestRecommendations(layer.getLatLng());
           });
           button.setAttribute('aria-expanded', 'false');
           L.DomEvent.disableClickPropagation(weatherButton);
