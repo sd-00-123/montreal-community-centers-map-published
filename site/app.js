@@ -1464,7 +1464,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
 const LIMIT = Infinity;
 
 // MANAGEMENT: Legend labels and colors for transit/place categories.
-const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Metro Stations': '#f59e0b', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d', };
+const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Metro Stations': '#89b1bd', 'Transit Bus Lines': '#a6998c', ' Transit Bus Stops': '#82816f2d', };
 
 const legend = L.control({ position: 'bottomright' });
 
