@@ -759,17 +759,17 @@ let selectedPlaceFeature = null;
 
 // Update the page with a small JavaScript demonstration.
 const center = document.getElementById('center');
-center.textContent = 'Hello from JavaScript';
+center.textContent = 'Hello there,I hope you enjoy using this map';
 center.style.background = '#DCBD23';
 
 // MANAGEMENT: Change the marker color for each place data layer here.
 const categoryColors = {
   'Parks and gardens': '#32d515aa',
   'Sports and recreation': '#e27f39',
-  'Arts, culture and community': '#800020'
+  'Comminity centers': '#800020'
 };
 
-
+  
 // For a NUMBER: one colour per class, light to dark.
 function colourFor(value) {
   if (value >= 100) return '#800020';
@@ -1464,7 +1464,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
 const LIMIT = Infinity;
 
 // MANAGEMENT: Legend labels and colors for transit/place categories.
-const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d', 'Metro Stations': '#f59e0b' };
+const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Metro Stations': '#f59e0b', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d', };
 
 const legend = L.control({ position: 'bottomright' });
 
