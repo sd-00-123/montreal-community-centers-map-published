@@ -25,19 +25,19 @@ const translations = {
     searchAddressLoading: 'Looking up address...',
     searchAddressNotFound: 'Address not found',
     searchAddressError: 'Could not find that address',
-    selectedPlace: 'Selected place',
+    selectedPlace: 'Selected Place',
     description: 'Description',
     accessibility: 'Accessibility',
     filterHeading: 'Map filters',
     boroughLabel: 'Filter and zoom to borough',
-    allBoroughs: 'All boroughs',
+    allBoroughs: 'All Boroughs',
     installationType: 'Installation type',
     parks: 'Parks and gardens',
     sports: 'Sports and recreation',
     community: 'Community centres',
-    loadingMap: 'Loading map...',
+    //loadingMap: 'Loading map...',
     mapNote: 'This map is a basic version, with cleaned data and organised for bare minimum use. Future versions will hopefully include more detailed information about each Center, such as senior age ranges at comunity centers, and condition.',
-    noMatch: 'No match',
+    noMatch: 'No Match',
     placesShown: 'places shown',
     hours: 'Hours of Service',
     address: 'Address',
@@ -65,7 +65,7 @@ const translations = {
     hoursTime: 'Time',
     switchToFrench: 'Switch to French',
     switchToEnglish: 'Switch to English',
-    boroughDensity: 'Community centres per borough'
+    boroughDensity: 'Community Centres Per Borough'
     ,
     nearestOptions: 'Nearest Options',
     busStop: 'Bus stop',
@@ -95,7 +95,7 @@ const translations = {
     parks: 'Parcs et jardins',
     sports: 'Sports et loisirs',
     community: 'Centres communautaires',
-    loadingMap: 'Chargement de la carte...',
+    //loadingMap: 'Chargement de la carte...',
     mapNote: 'Cette carte est une version de base, avec des données nettoyées et organisées pour une utilisation minimale. Les prochaines versions pourraient inclure plus de renseignements sur chaque centre, notamment les groupes d’âge et l’état des lieux.',
     noMatch: 'Aucun résultat',
     placesShown: 'lieux affichés',
@@ -125,7 +125,7 @@ const translations = {
     hoursTime: 'Heure',
     switchToFrench: 'Passer au français',
     switchToEnglish: 'Passer à l’anglais',
-    boroughDensity: 'Centres communautaires par arrondissement'
+    boroughDensity: 'Centres Communautaires Par Arrondissement'
     ,
     nearestOptions: 'Options d’urgence les plus proches',
     busStop: 'Arrêt d’autobus',
@@ -657,7 +657,7 @@ function showWeatherPopup(latlng, placeName) {
   }
 
   const place = {
-    name: placeName || 'selected map location',
+    name: placeName || 'Selected Map Location',
     lat: latlng.lat,
     lon: latlng.lng
   };
@@ -740,7 +740,7 @@ function bindWeatherToLayer(layer, placeName) {
 
 // Show current weather for any location the reader clicks on the map.
 map.on('click', function (event) {
-  showWeatherPopup(event.latlng, 'selected map location');
+  showWeatherPopup(event.latlng, 'Selected Map Location');
   updateNearestRecommendations(event.latlng);
 });
 
@@ -759,8 +759,8 @@ let selectedPlaceFeature = null;
 
 // Update the page with a small JavaScript demonstration.
 const center = document.getElementById('center');
-center.textContent = 'Hello there,I hope you enjoy using this map';
-center.style.background = '#DCBD23';
+center.textContent = 'Hello there, I hope you enjoy using this map';
+center.style.background = '#c9c8c5';
 
 // MANAGEMENT: Change the marker color for each place data layer here.
 const categoryColors = {
@@ -1503,7 +1503,7 @@ legend.onAdd = function () {
     (boroughDensityVisible ? ' checked' : '') + '>' +
     '<strong>' + (currentLanguage === 'fr'
       ? 'Centres communautaires par arrondissement'
-      : 'Community centres per borough') + '</strong>' +
+      : 'Community Centres Per Borough') + '</strong>' +
     '</label><br>' +
     densityItems +
     '<br><label class="legend-toggle">' +
@@ -1624,11 +1624,11 @@ Promise.all([
     }, {
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
-          color: '#b45309',
-          radius: 6,
-          fillColor: '#f59e0b',
+          color: '#d3b8d4',
+          radius: 5,
+          fillColor: '#d3b8d4',
           fillOpacity: 0.9,
-          weight: 2
+          weight: 1
         });
       },
       onEachFeature: function (feature, layer) {
@@ -1731,7 +1731,7 @@ fetch(dataRoot + 'mtl_places_clean_output.geojson')
   .then(function (response) {
     if (!response.ok) {
       throw new Error(
-        'HTTP ' + response.status + ' loading mtl_places_clean_output.geojson'
+        'HTTP ' + response.status + ' loading Community Centers Data' // mtl_places_clean_output.geojson
       );
     }
 
