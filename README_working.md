@@ -1,3 +1,6 @@
+
+
+
 page
 https://sd-00-123.github.io/montreal-community-centers-map-published/
 
@@ -6,12 +9,40 @@ https://sd-00-123.github.io/montreal-community-centers-map-published/site/
 
 
 Features Added: A3
-Weather api data turned into slider 
+1. Weather api data turned into slider 
     Need: proper threshold of good, caution bad indicators
+2. Three Nearest places from a click
 
-Post Testing Nov 11th: Synthesised and Prioritized Notes
+------------------------------------------------------------
+        Post Testing Nov 11th: Synthesised and Prioritized Notes
 
------------------------------------------------
+
+OVERLAPPING POINTS:
+
+1. DONE
+	a. Get directions on pop-up > link to google maps 
+
+	b. Transit: Wouldn't know how to get to the place they want to go
+	Idea: merge with google maps like TEST 1 above
+
+
+2. 
+DONE	a. Redefines search case sensitive etc. 
+		TEST 1 and 3
+
+DONE	b. Make bus and metro stops layer pop up 
+        TEST 2 borough legend toggle off layer (only for data use)
+	
+DONE c. Alphabetical borough filter
+		TEST 2 and 3
+
+
+Other changes:
+a. DONE changed borough legend layer to toggle feature 
+	b. color now grey for NONE category in legend
+
+
+
 Test 1: one person
 
 Searched words:
@@ -132,4 +163,28 @@ Suggestions:
 	8. Redefines search case sensitive etc. 
 		TEST 1 and 3
 
+	9. Make bus tops layer pop up 
+        TEST 2 borough legend toggle off layer (only for data use)
+	
+	10. Alphabetical borough filter
+		TEST 2 and 3
 -------------------------------------------------
+
+Other ideas:
+1. Have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
+
+2. Have a open souce portion for users to input other unknown locations or update pop up info ONLY
+sort of like a editable front end page?
+-------------------------------------------
+
+git status
+git add site/mtl_places_clean_output.geojson
+git commit -m "code for search box "
+git push
+
+--------------------------------
+Tailored message:
+git status
+git add README_working.md
+git commit -m "Udpate changes to file"
+git push
