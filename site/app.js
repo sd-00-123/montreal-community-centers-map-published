@@ -25,6 +25,7 @@ const translations = {
     searchAddressError: 'Could not find that address',
     selectedPlace: 'Selected place',
     description: 'Description',
+    accessibility: 'Accessibility',
     filterHeading: 'Map filters',
     boroughLabel: 'Filter and zoom to borough',
     allBoroughs: 'All boroughs',
@@ -81,6 +82,7 @@ const translations = {
     searchAddressError: 'Impossible de trouver cette adresse',
     selectedPlace: 'Lieu sélectionné',
     description: 'Description',
+    accessibility: 'Accessibilité',
     filterHeading: 'Filtres de la carte',
     boroughLabel: 'Filtrer et zoomer sur un arrondissement',
     allBoroughs: 'Tous les arrondissements',
@@ -1087,6 +1089,8 @@ function showPlaceDetails(feature) {
     escapeHtml(properties.adresse_principale || translate('notAvailable')) + '<br>' +
     '<strong>' + translate('type') + ':</strong> ' +
     escapeHtml(properties.types || translate('notAvailable')) + '<br>' +
+    '<strong>' + translate('accessibility') + ':</strong> ' +
+    escapeHtml(properties.accessibilite || translate('notAvailable')) + '<br>' +
     '<strong>' + translate('borough') + ':</strong> ' +
     escapeHtml(properties.arrondissements || translate('notAvailable')) + '</p>';
   panel.hidden = false;
