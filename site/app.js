@@ -71,8 +71,8 @@ const translations = {
     communityCentre: 'Community centre',
     park: 'Park',
     distance: 'Distance',
-    nearestButton: 'For Nearest options',
-    weatherButton: 'For wWather conditions',
+    nearestButton: 'For Nearest Options',
+    weatherButton: 'For Weather Conditions',
     googleMapsButton: 'Get Directions'
   },
   fr: {
