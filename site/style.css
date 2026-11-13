@@ -305,11 +305,8 @@ a { color: var(--accent); }
   font-size: 15px;
   margin: 3px 0;
 }
-.borough-density-toggle {
-  display: block;
-  font-size: 15px;
-  margin: 12px 0 0;
-}
+.legend-toggle { cursor: pointer; }
+.legend-toggle input { margin: 0 6px 0 0; }
 
 /* on a narrow screen the panel goes below the map instead of squeezing it to nothing. */
 @media (max-width: 375px) {

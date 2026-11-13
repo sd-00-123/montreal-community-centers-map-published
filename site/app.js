@@ -269,20 +269,6 @@ function setupLanguageToggle() {
 
 setupLanguageToggle();
 
-function setupBoroughDensityToggle() {
-  const checkbox = document.getElementById('borough-density-toggle');
-  if (!checkbox) {
-    return;
-  }
-
-  checkbox.addEventListener('change', function (event) {
-    boroughDensityVisible = event.target.checked;
-    updateBoroughLayerVisibility();
-  });
-}
-
-setupBoroughDensityToggle();
-
 function showDataLoadError(dataFile) {
   const status = document.getElementById('status');
   dataLoadError = true;
@@ -1091,13 +1077,21 @@ legend.onAdd = function () {
   }).join('<br>');
 
   div.innerHTML =
+    '<label class="legend-toggle">' +
+    '<input type="checkbox" id="borough-density-toggle"' +
+    (boroughDensityVisible ? ' checked' : '') + '>' +
     '<strong>' + (currentLanguage === 'fr'
       ? 'Centres communautaires par arrondissement'
-      : 'Community centres per borough') + '</strong><br>' +
+      : 'Community centres per borough') + '</strong>' +
+    '</label><br>' +
     densityItems +
     '<br><strong>' + (currentLanguage === 'fr' ? 'Catégories de la carte' : 'Map categories') + '</strong><br>' +
     categoryItems;
   L.DomEvent.disableClickPropagation(div);
+  div.querySelector('#borough-density-toggle').addEventListener('change', function (event) {
+    boroughDensityVisible = event.target.checked;
+    updateBoroughLayerVisibility();
+  });
   return div;
 };
 
