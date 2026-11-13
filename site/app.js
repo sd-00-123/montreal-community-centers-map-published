@@ -332,6 +332,46 @@ function translate(key) {
   return translations[currentLanguage][key] || translations.en[key] || key;
 }
 
+const placeValueTranslations = {
+  'Arts, culture and community': 'Arts, culture et communauté',
+  'Parks and gardens': 'Parcs et jardins',
+  'Points of service': 'Points de service',
+  'Recycling and waste': 'Recyclage et déchets',
+  'Sports and recreation': 'Sports et loisirs',
+  'Access ramp': 'Rampe d’accès',
+  'Access way': 'Voie d’accès',
+  'Accessible parking': 'Stationnement accessible',
+  'Accessible signage': 'Signalisation accessible',
+  'Accessible washroom': 'Toilette accessible',
+  'Accessible washrooms': 'Toilettes accessibles',
+  'Automatic opening door': 'Porte à ouverture automatique',
+  'Beach entry': 'Accès à la plage',
+  'Drop-off zone': 'Zone de débarquement',
+  'Elevator': 'Ascenseur',
+  'Gender-inclusive washrooms': 'Toilettes inclusives',
+  'Ground-level entrance': 'Entrée au rez-de-chaussée',
+  'Individual accessible washroom': 'Toilette individuelle accessible',
+  'Paratransit drop-off zone': 'Zone de débarquement du transport adapté',
+  'Push button at building entrance': 'Bouton-poussoir à l’entrée du bâtiment',
+  'Reserved parking spaces (permit)': 'Places de stationnement réservées (permis)',
+  'Assistive devices': 'Appareils fonctionnels',
+  'Community centre': 'Centre communautaire',
+  'Park': 'Parc',
+  'Sports centre': 'Centre sportif',
+  'Swimming pool': 'Piscine'
+};
+
+function translatePlaceValue(value) {
+  if (!value || currentLanguage === 'en') {
+    return value || translate('notAvailable');
+  }
+
+  return String(value).split(',').map(function (part) {
+    const trimmedPart = part.trim();
+    return placeValueTranslations[trimmedPart] || trimmedPart;
+  }).join(', ');
+}
+
 function applyLanguage() {
   document.documentElement.lang = currentLanguage;
   document.querySelectorAll('[data-i18n]').forEach(function (element) {
@@ -1125,9 +1165,11 @@ function showPlaceDetails(feature) {
     '<p><strong>' + translate('address') + ':</strong> ' +
     escapeHtml(properties.adresse_principale || translate('notAvailable')) + '<br>' +
     '<strong>' + translate('type') + ':</strong> ' +
-    escapeHtml(properties.types || translate('notAvailable')) + '<br>' +
+    escapeHtml(translatePlaceValue(properties.types)) + '<br>' +
+    '<strong>' + translate('installation') + ':</strong> ' +
+    escapeHtml(translatePlaceValue(properties.installations)) + '<br>' +
     '<strong>' + translate('accessibility') + ':</strong> ' +
-    escapeHtml(properties.accessibilite || translate('notAvailable')) + '<br>' +
+    escapeHtml(translatePlaceValue(properties.accessibilite)) + '<br>' +
     '<strong>' + translate('borough') + ':</strong> ' +
     escapeHtml(properties.arrondissements || translate('notAvailable')) + '</p>';
   panel.hidden = false;
