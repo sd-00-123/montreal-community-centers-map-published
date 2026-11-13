@@ -953,7 +953,9 @@ function setupBoroughFilter() {
     return;
   }
 
-  boroughFeatures.forEach(function (feature) {
+  boroughFeatures.slice().sort(function (a, b) {
+    return norm(a.properties.NOM).localeCompare(norm(b.properties.NOM));
+  }).forEach(function (feature) {
     const option = document.createElement('option');
     option.value = feature.properties.NOM;
     option.textContent = feature.properties.NOM;
