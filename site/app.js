@@ -50,6 +50,9 @@ const translations = {
     good: 'Good',
     caution: 'Caution',
     bad: 'Bad',
+    weatherGood: 'Good conditions',
+    weatherCaution: 'Use caution',
+    weatherBad: 'Poor conditions',
     temperature: 'Temperature',
     windSpeed: 'Wind speed',
     precipitation: 'Precipitation',
@@ -107,6 +110,9 @@ const translations = {
     good: 'Bon',
     caution: 'Prudence',
     bad: 'Mauvais',
+    weatherGood: 'Bonnes conditions',
+    weatherCaution: 'Prudence',
+    weatherBad: 'Mauvaises conditions',
     temperature: 'Température',
     windSpeed: 'Vitesse du vent',
     precipitation: 'Précipitations',
@@ -432,6 +438,16 @@ let weatherRequestTimer;
 let weatherPopup;
 let weatherLoadingPopup;
 const weatherPopupMinimumZoom = 12;
+const weatherThresholds = {
+  extremeCold: -15,
+  extremeHeat: 35,
+  cautionCold: -5,
+  cautionHeat: 30,
+  extremeWind: 50,
+  cautionWind: 30,
+  extremePrecipitation: 5,
+  extremeSnowfall: 2
+};
 
 map.on('zoomend', function () {
   if (weatherPopup && map.getZoom() < weatherPopupMinimumZoom) {
@@ -445,48 +461,49 @@ map.on('zoomend', function () {
 });
 
 function assessWeather(current) {
-  let score = 100;
+  let severity = 0;
+  const setSeverity = function (value) {
+    severity = Math.max(severity, value);
+  };
 
-  if (current.temperature_2m < -15 || current.temperature_2m > 35) {
-    score -= 35;
-  } else if (current.temperature_2m < -5 || current.temperature_2m > 30) {
-    score -= 20;
+  if (current.temperature_2m <= weatherThresholds.extremeCold ||
+      current.temperature_2m >= weatherThresholds.extremeHeat) {
+    setSeverity(2);
+  } else if (current.temperature_2m <= weatherThresholds.cautionCold ||
+      current.temperature_2m >= weatherThresholds.cautionHeat) {
+    setSeverity(1);
   }
 
-  if (current.wind_speed_10m > 50) {
-    score -= 30;
-  } else if (current.wind_speed_10m > 30) {
-    score -= 20;
+  if (current.wind_speed_10m >= weatherThresholds.extremeWind) {
+    setSeverity(2);
+  } else if (current.wind_speed_10m >= weatherThresholds.cautionWind) {
+    setSeverity(1);
   }
 
-  if (current.precipitation > 5 || current.snowfall > 2) {
-    score -= 30;
+  if (current.precipitation >= weatherThresholds.extremePrecipitation ||
+      current.snowfall >= weatherThresholds.extremeSnowfall) {
+    setSeverity(2);
   } else if (current.precipitation > 0 || current.snowfall > 0) {
-    score -= 15;
+    setSeverity(1);
   }
 
   if ([65, 67, 75, 82, 95, 96, 99].indexOf(current.weather_code) !== -1) {
-    score -= 30;
+    setSeverity(2);
   } else if (current.weather_code >= 51) {
-    score -= 15;
+    setSeverity(1);
   }
 
-  score = Math.max(0, Math.min(100, score));
-
-  let status = 'Good conditions';
-  let statusClass = 'weather-good';
-  if (score < 40) {
-    status = 'Poor conditions';
-    statusClass = 'weather-bad';
-  } else if (score < 70) {
-    status = 'Use caution';
-    statusClass = 'weather-caution';
-  }
+  const statusBySeverity = [
+    { status: translate('weatherGood'), statusClass: 'weather-good' },
+    { status: translate('weatherCaution'), statusClass: 'weather-caution' },
+    { status: translate('weatherBad'), statusClass: 'weather-bad' }
+  ];
+  const status = statusBySeverity[severity];
 
   return {
-    score: score,
-    status: status,
-    statusClass: statusClass
+    position: severity * 50,
+    status: status.status,
+    statusClass: status.statusClass
   };
 }
 
@@ -535,7 +552,7 @@ function weatherContent(data, placeName) {
     '<div class="weather-status ' + weather.statusClass + '">' +
     weather.status + '</div>' +
     '<div class="weather-scale" aria-label="Weather quality scale">' +
-    '<span class="weather-marker" style="left: ' + (100 - weather.score) +
+    '<span class="weather-marker" style="left: ' + weather.position +
     '%"></span></div>' +
     '<div class="weather-scale-labels"><span>' + translate('good') + '</span>' +
     '<span>' + translate('caution') + '</span><span>' + translate('bad') +
