@@ -97,8 +97,19 @@ h1, h2 { color: var(--accent); }
   margin-top: 8px;
   padding: 6px 8px;
 }
+.google-maps-button {
+  background: #34a853;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 8px;
+  padding: 6px 8px;
+}
 .weather-options-button:focus,
-.weather-options-button:hover {
+.weather-options-button:hover,
+.google-maps-button:focus,
+.google-maps-button:hover {
   background: #1F2D5A;
 }
 .nearest-options-button:focus,

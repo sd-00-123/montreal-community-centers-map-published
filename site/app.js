@@ -6,6 +6,7 @@ const map = L.map('map', { preferCanvas: true }).setView([45.45, -73.7], 10.45);
 
 // Support both the current root deployment and the legacy /site/ URL.
 const dataRoot = window.location.pathname.includes('/site/') ? '../' : './';
+const GOOGLE_MAPS_URL = 'https://www.google.com/maps/@45.5409057,-73.7217907,11z?entry=ttu&g_ep=EgoyMDI2MTExMC4wIKXMDSoASAFQAw%3D%3D';
 let dataLoadError = false;
 let currentLanguage = 'en';
 let stopFeatures = [];
@@ -59,7 +60,8 @@ const translations = {
     communityCentre: 'Community centre',
     distance: 'Distance',
     nearestButton: 'For nearest options',
-    weatherButton: 'For weather conditions'
+    weatherButton: 'For weather conditions',
+    googleMapsButton: 'Get Directions'
   },
   fr: {
     title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
@@ -107,7 +109,8 @@ const translations = {
     communityCentre: 'Centre communautaire',
     distance: 'Distance',
     nearestButton: 'Pour les options les plus proches',
-    weatherButton: 'Pour les conditions météorologiques'
+    weatherButton: 'Pour les conditions météorologiques',
+    googleMapsButton: 'Obtenir l’itinéraire'
   }
 };
 
@@ -878,7 +881,9 @@ function renderPlaceLayers() {
           '<br><span class="popup-action-buttons"><button type="button" class="nearest-options-button">' +
           translate('nearestButton') + '</button>' +
           '<button type="button" class="weather-options-button">' +
-          translate('weatherButton') + '</button></span>' +
+          translate('weatherButton') + '</button>' +
+          '<button type="button" class="google-maps-button">' +
+          translate('googleMapsButton') + '</button></span>' +
           '<div class="nearest-options-details" hidden></div>' +
           '<div class="weather-options-details" hidden></div>',
           { closeButton: true }
@@ -889,8 +894,9 @@ function renderPlaceLayers() {
           const details = popupElement.querySelector('.nearest-options-details');
           const weatherButton = popupElement.querySelector('.weather-options-button');
           const weatherDetails = popupElement.querySelector('.weather-options-details');
+          const googleMapsButton = popupElement.querySelector('.google-maps-button');
 
-          if (!button || !details || !weatherButton || !weatherDetails) {
+          if (!button || !details || !weatherButton || !weatherDetails || !googleMapsButton) {
             return;
           }
 
@@ -919,6 +925,10 @@ function renderPlaceLayers() {
             }
           });
           weatherButton.setAttribute('aria-expanded', 'false');
+          L.DomEvent.disableClickPropagation(googleMapsButton);
+          googleMapsButton.addEventListener('click', function () {
+            window.open(GOOGLE_MAPS_URL, '_blank', 'noopener,noreferrer');
+          });
         });
       }
     });
