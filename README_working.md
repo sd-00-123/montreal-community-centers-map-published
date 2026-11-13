@@ -1,6 +1,3 @@
-
-
-
 page
 https://sd-00-123.github.io/montreal-community-centers-map-published/
 
@@ -12,206 +9,33 @@ https://sd-00-123.github.io/montreal-community-centers-map-published/site/?v=acc
 
 Features Added: A3
 1. Weather api data turned into slider 
-    Need: proper threshold of good, caution bad indicators
 2. Three Nearest places from a click
 
-------------------------------------------------------------
-        Post Testing Nov 11th: Synthesised and Prioritized Notes
 
+## Part 3: what I found, and one fix
+Evidence: 
+The tester found the website should have a better intergration of a transit route. Clicked on the map but wanted to see feasbile transit. "It would be good the have the google map link in your popup" Test 1 and 2
 
-OVERLAPPING POINTS: Priority
+Severity: 
+2 since they were still able to navigate the map and see community centers. They said having a transit option wasn't a problem since they could paste my popup adress of the place on google maps in a diffrent browser.
 
-1. 
-DONE	a. Get directions on pop-up > link to google maps 
+My change: 
+I will/did change before this lab, the google maps link embedded into my pop up
 
-DONE	b. Transit: Wouldn't know how to get to the place they want to go
-			Idea: merge with google maps like TEST 1 above
+Recheck: Fixed: 
+they were able to click the popup and get directions from their location.
 
-2. 
-DONE	a. Redefines search case sensitive etc. 
-		TEST 1 and 3
+Fixed means: they do it without hesitating at that spot
 
-3. 
-DONE	b. Make bus and metro stops layer pop up 
-        TEST 2 borough legend toggle off layer (only for data use)
+ALSO FIXED:
+My testers suggested putting my borough filter in alphabetical order 
+I fixed that this morning as well befrore the lab.
+I did about 5 fixes from their suggestions from small and big. 
 
-4. 
-DONE    c. Alphabetical borough filter
-		TEST 2 and 3
+AI DISCLOSURE: A3 M8 
+Most of my post testing fixes were done using the git educaiton AI. For example, I didn't know how to make a toggle eature for my community centers per borough density layer, so I tell the AI the make a toggle feature on the legend just for this layer. This change was in app.js at lines 1495 to 1509 as well as 809 to 819 for layer added to map if I am not mistaken. 
+On thing I don't fuly understand is after asking for htis change. I don't know why the layer doesn't stay underneath the community centers data layer. I tried to locate the layer in app.js but didn't change or switch layers since I didn't fully know where the code starts and ends / how to trasition the layer properly. 
 
-
-Other changes:
-a. DONE changed borough legend layer to toggle feature 
-	b. color now grey for NONE category in legend
-
-b. added threshold for weather conditions so slider should have good, caution and bad ratings now
-
-c. added arrow head and circle markers to all nerest data points on click event
-	added metro stations to nearest option list 
-	added park to nearest option list 
-
-d. added description and accessability in panel on click event 
-
-e. added serach box drop down menu
-	- expanded seach to numbers for adresses
-	- partial match
-
-f. Separated arts and culture from community centers name (legend and pop up)
-	now onyl shows 'community centers' as name
-
-
-Note:
-1. Need overlay or hghight of borough clicked / searched on 
-
-2. A bit more visual display for data button to be more obvious to click on 
-
-
-See if a transitroute can be made with the stop routes. 
-demostrate if nerest options can actually take you to destination?
-
-Still need A to B option route
-
-Still need 211 grnad montreal api for additional commnunity centers not municiaply regonnised
-
-
-----------------------------------------------------------------
-					TESTING DAY NOTES:
-
-Test 1: one person
-
-Searched words:
-	• Diorval 
-	• Point Claire 
-
-Buttons Used: Features 
-	- Weather slider 
-	- Nearest places on click
-
-Suggestions:
-	1. Add a highlight of the locations from the click event 
-	In addition to the line 
-	
-	2. Get directions on pop-up > link to google maps 
-	
-Change:
-	1. Hard to click and differentiate each data point 
-	
-	2. Needs clearer borough search 
-
-DONE 3. Shows data point if even outside of borough 
-	
-DONE Or direction "filter through boroughs to see map 
-
-	3. A bit more visual display for data button to be more obvious to click on 
-	
-WHAT IS CLEAR ON THE MAP:
-	- Toggle buttons clear 
-	- Colors clear 
-
-DONE Possible BUG: Need circles to pop up after click (for borough-borough nearest place)
-
-Possible toggles:
-	- Churches
-
-DONE  Find case sensitive for search button 	
-		Eg: park > drop down of anything remotely related to parks
-
-OVERALL:
-	- Confusing and overwhelming of points of the map 
-	- Classification of use of buttons
-
-	- Data is good 
-Synthesis need work 
-
-
-------------------------------------------
-Test 2: one person
-
-WHAT GOOD ON THE MAP:
-	- For elderly community and see locations of what their into / bus stops 
-	- Colors show difference 
-	- Boroughs are easy to find 
-
-Change:
-DONE	1. Transit: Wouldn't know how to get to the place they want to go
-			My Idea: merge with google maps like TEST 1 above
-
-	2. Zoom is confusing: Don't zoom in as much 
-	
-DONE  3. Also have datapoint from other borough / cross boroughs for closest place clicked
-
-DONE	1. Separate arts and culture from community centers name (legend and pop up)
-	
-
-Suggestions:
-DONE	1. Add closets parks with bus stops 
-
-Done	2. Alphabetical order of borough filters 
-
-?CHECK	3. Add type with installation to get more information on the place itself 
-		Walk around field vs area (what type)
-		Partly description
-		Eg: Shade, benches 
-
-how?  4. Insert picture from each pop up 
-
-	5. Add feature to know Is it actually walkable? Or transit?
-		More information about bus for bus lines: direction, NS etc. 
-
-	6. Add slide side bar for events / tables  on a different pane on the left 
-		Map > 
-		Table > 
-
-DONE	7.  Color should be grey in null boroughs (with no data)
-	
-OVERALL:
-	- Straightforward 
-	- Basic map 
-	- Elderly= there's a color it should mean something
-
-------------------------------------------
-Test 3: group
-
-Suggestions:
-Done	1. Add a toggle off layer for community borough concentration 
-				Idea: like TEST 2 null grey boroughs correspond above
-DONE		a. Make bus stops layer pop up 
-       			 TEST 2 borough legend toggle off layer (only for data use)
-
-	2. Language button larger 
-
-DONE	3. Classify alphabetically boroughs in filter 
-			TEST 2 and 3
-
-	4. Have more colors to differentiate 
-
-DONE    5. Minimizes emergency stops collapsable panel on the right 
-
-	6. Filter out zoom to make it less jittery
-		TEST 2 and 3
-
-	7. Change dot (pop-up) shapes 
-		Eg: green = trees
-
-	8. Remove loading map = confusing 
-
-DONE	9. Redefines search case sensitive etc. 
-		TEST 1 and 3
-	
-DONE	10. Alphabetical borough filter
-		TEST 2 and 3
-
--------------------------------------------------
-Other ideas:
-1. Have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
-
-2. Have a open souce portion for users to input other unknown locations or update pop up info ONLY
-sort of like a editable front end page?
--------------------------------------------
-
-
-
-updated README: your fix with before and after screenshots; your feature explained (which lines do the work, in your own words, and one thing you do not yet fully understand); and your A3 AI disclosure, written as process.
 
 
 ------------------
@@ -223,7 +47,7 @@ git push
 --------------------------------
 Tailored message:
 git status
-git add README.MD
+git add site/app.js
 git commit -m "Update"
 git push
 
