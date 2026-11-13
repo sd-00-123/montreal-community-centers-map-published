@@ -51,7 +51,8 @@ const translations = {
     hoursDay: 'Day',
     hoursTime: 'Time',
     switchToFrench: 'Switch to French',
-    switchToEnglish: 'Switch to English'
+    switchToEnglish: 'Switch to English',
+    boroughDensity: 'Community centres per borough'
     ,
     nearestOptions: 'Nearest emergency options',
     busStop: 'Bus stop',
@@ -98,7 +99,8 @@ const translations = {
     hoursDay: 'Jour',
     hoursTime: 'Heure',
     switchToFrench: 'Passer au français',
-    switchToEnglish: 'Passer à l’anglais'
+    switchToEnglish: 'Passer à l’anglais',
+    boroughDensity: 'Centres communautaires par arrondissement'
     ,
     nearestOptions: 'Options d’urgence les plus proches',
     busStop: 'Arrêt d’autobus',
@@ -263,6 +265,20 @@ function setupLanguageToggle() {
 }
 
 setupLanguageToggle();
+
+function setupBoroughDensityToggle() {
+  const checkbox = document.getElementById('borough-density-toggle');
+  if (!checkbox) {
+    return;
+  }
+
+  checkbox.addEventListener('change', function (event) {
+    boroughDensityVisible = event.target.checked;
+    updateBoroughLayerVisibility();
+  });
+}
+
+setupBoroughDensityToggle();
 
 function showDataLoadError(dataFile) {
   const status = document.getElementById('status');
@@ -1065,21 +1081,13 @@ legend.onAdd = function () {
   }).join('<br>');
 
   div.innerHTML =
-    '<label class="legend-toggle">' +
-    '<input type="checkbox" id="borough-density-toggle"' +
-    (boroughDensityVisible ? ' checked' : '') + '>' +
     '<strong>' + (currentLanguage === 'fr'
       ? 'Centres communautaires par arrondissement'
-      : 'Community centres per borough') + '</strong>' +
-    '</label><br>' +
+      : 'Community centres per borough') + '</strong><br>' +
     densityItems +
     '<br><strong>' + (currentLanguage === 'fr' ? 'Catégories de la carte' : 'Map categories') + '</strong><br>' +
     categoryItems;
   L.DomEvent.disableClickPropagation(div);
-  div.querySelector('#borough-density-toggle').addEventListener('change', function (event) {
-    boroughDensityVisible = event.target.checked;
-    updateBoroughLayerVisibility();
-  });
   return div;
 };
 
