@@ -10,6 +10,7 @@ const GOOGLE_MAPS_URL = 'https://www.google.com/maps/@45.5409057,-73.7217907,11z
 let dataLoadError = false;
 let currentLanguage = 'en';
 let stopFeatures = [];
+let metroFeatures = [];
 let lastRecommendationPoint;
 let recommendationLayer = L.layerGroup().addTo(map);
 
@@ -60,6 +61,7 @@ const translations = {
     ,
     nearestOptions: 'Nearest emergency options',
     busStop: 'Bus stop',
+    metroStation: 'Metro station',
     communityCentre: 'Community centre',
     park: 'Park',
     distance: 'Distance',
@@ -113,6 +115,7 @@ const translations = {
     ,
     nearestOptions: 'Options d’urgence les plus proches',
     busStop: 'Arrêt d’autobus',
+    metroStation: 'Station de métro',
     communityCentre: 'Centre communautaire',
     park: 'Parc',
     distance: 'Distance',
@@ -183,7 +186,22 @@ function updateNearestRecommendations(latlng, targetPanel) {
       };
     }).sort(function (a, b) {
       return a.distance - b.distance;
-    }).slice(0, 2);
+    }).slice(0, 1);
+
+    const metro = metroFeatures.map(function (feature) {
+      const lat = Number(feature.geometry.coordinates[1]);
+      const lng = Number(feature.geometry.coordinates[0]);
+      return {
+        feature: feature,
+        latlng: L.latLng(lat, lng),
+        distance: distanceInMetres(latlng, { lat: lat, lng: lng }),
+        label: feature.properties.station || translate('metroStation'),
+        type: translate('metroStation'),
+        colour: '#f59e0b'
+      };
+    }).sort(function (a, b) {
+      return a.distance - b.distance;
+    })[0];
 
     const indoor = placesData.features.filter(function (feature) {
       return feature.properties.types === 'Arts, culture and community';
@@ -204,6 +222,10 @@ function updateNearestRecommendations(latlng, targetPanel) {
 
     if (indoor) {
       destinations.push(indoor);
+    }
+
+    if (metro) {
+      destinations.splice(1, 0, metro);
     }
 
     const park = placesData.features.filter(function (feature) {
@@ -1320,7 +1342,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
 const LIMIT = Infinity;
 
 // Reusable colors for feature categories.
-const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d' };
+const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d', 'Metro Stations': '#f59e0b' };
 
 const legend = L.control({ position: 'bottomright' });
 
@@ -1333,7 +1355,8 @@ legend.onAdd = function () {
     'Parks and gardens': translate('parks'),
     'Sports and recreation': translate('sports'),
     'Transit Bus Lines': currentLanguage === 'fr' ? 'Lignes d’autobus' : 'Transit Bus Lines',
-    ' Transit Bus Stops': currentLanguage === 'fr' ? 'Arrêts d’autobus' : 'Transit Bus Stops'
+    ' Transit Bus Stops': currentLanguage === 'fr' ? 'Arrêts d’autobus' : 'Transit Bus Stops',
+    'Metro Stations': currentLanguage === 'fr' ? 'Stations de métro' : 'Metro Stations'
   };
   const categoryItems = Object.keys(colours).map(function (k) {
     return '<span style="background:' + colours[k] + '"></span>' + categoryLabels[k];
@@ -1377,7 +1400,8 @@ legend.addTo(map);
 // Request the stops GeoJSON and route-point CSV from the repository root.
 Promise.all([
   fetch(dataRoot + 'stops_clean_output.geojson'),
-  fetch(dataRoot + 'shapes.csv')
+  fetch(dataRoot + 'shapes.csv'),
+  fetch(dataRoot + 'MetroStops/MetroStops.geojson')
 ])
   .then(function (responses) {
     responses.forEach(function (response) {
@@ -1390,11 +1414,13 @@ Promise.all([
 
     return Promise.all([
       responses[0].json(),
-      responses[1].text()
+      responses[1].text(),
+      responses[2].json()
     ]);
   })
   .then(function (datasets) {
     const stopsData = datasets[0];
+    metroFeatures = datasets[2].features;
     stopFeatures = stopsData.features;
     if (lastRecommendationPoint && placesData) {
       updateNearestRecommendations(lastRecommendationPoint);
@@ -1457,10 +1483,39 @@ Promise.all([
 
     stopsLayer.addTo(map);
 
+    const metroLayer = L.geoJSON({
+      type: 'FeatureCollection',
+      features: metroFeatures
+    }, {
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, {
+          color: '#b45309',
+          radius: 6,
+          fillColor: '#f59e0b',
+          fillOpacity: 0.9,
+          weight: 2
+        });
+      },
+      onEachFeature: function (feature, layer) {
+        const properties = feature.properties;
+        bindWeatherToLayer(layer, properties.station || translate('metroStation'));
+        layer.bindPopup(
+          '<strong>' + escapeHtml(properties.station || translate('metroStation')) + '</strong><br>' +
+          translate('metroStation') + '<br>' +
+          'Line: ' + escapeHtml(properties.line || translate('notAvailable')) + '<br>' +
+          'Wheelchair access: ' +
+          escapeHtml(properties.wheelchair_access || translate('notAvailable')),
+          { closeButton: true }
+        );
+      }
+    });
+    metroLayer.addTo(map);
+
     // Report how many features were displayed.
     if (!dataLoadError) {
       document.getElementById('status').textContent =
-        shown.features.length + ' of ' + stopsData.features.length + ' stops shown';
+        shown.features.length + ' of ' + stopsData.features.length +
+        ' stops and ' + metroFeatures.length + ' metro stations shown';
     }
 
     // Build the transit route layer from the second dataset.
