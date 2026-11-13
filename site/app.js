@@ -17,7 +17,7 @@ let recommendationLayer = L.layerGroup().addTo(map);
 const translations = {
   en: {
     title: 'Montreal Elderly Community and Recreation Centers / Places',
-    mapDescription: 'Use the map controls to zoom and move around the map. Select a point or route to view more details. Use the map to identify the location of recreation and community centers and plan transit to these locations accordingly. For directions, click on a maroon dot or community center, scroll to the bottom of the opened page, and click "GET ITINERARY".',
+    mapDescription: 'Use the map controls to zoom and move around the map. Select a point or route to view more details. Use the map to identify the location of recreation and community centers and plan transit to these locations accordingly.',
     searchLabel: 'Search',
     searchPlaceholder: 'Search by name, borough, or postal code',
     searchAddressLoading: 'Looking up address...',
@@ -74,7 +74,7 @@ const translations = {
   },
   fr: {
     title: 'Centres communautaires et de loisirs pour personnes âgées de Montréal / Lieux',
-    mapDescription: 'Utilisez les commandes de la carte pour zoomer et vous déplacer. Sélectionnez un point ou un trajet pour voir plus de détails. Utilisez la carte pour trouver les centres de loisirs et communautaires et planifier votre trajet. Pour obtenir un itinéraire, cliquez sur un point bordeaux ou un centre communautaire, faites défiler jusqu’au bas de la page ouverte, puis cliquez sur « GET ITINERARY ».',
+    mapDescription: 'Utilisez les commandes de la carte pour zoomer et vous déplacer. Sélectionnez un point ou un trajet pour voir plus de détails. Utilisez la carte pour trouver les centres de loisirs et communautaires et planifier votre trajet.',
     searchLabel: 'Rechercher',
     searchPlaceholder: 'Rechercher par nom, arrondissement ou code postal',
     searchAddressLoading: 'Recherche de l’adresse...',
