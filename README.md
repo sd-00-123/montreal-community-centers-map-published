@@ -46,18 +46,11 @@ Other ideas:
 2. Have a open souce portion for users to input other unknown locations or update pop up info ONLY
 sort of like a editable front end page?
 
--------------------------------------------
-
-git status
-git add site/mtl_places_clean_output.geojson
-git commit -m "code for search box "
-git push
-
 --------------------------------
 Tailored message:
 git status
-git add README_working.md
-git commit -m "New working readme file for final project use"
+git add README.md
+git commit -m "updated A3"
 git push
 
 
