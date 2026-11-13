@@ -94,4 +94,4 @@ Not availble data is written in po up or in a sentence |
 
 
 
-
+updated README: your fix with before and after screenshots; your feature explained (which lines do the work, in your own words, and one thing you do not yet fully understand); and your A3 AI disclosure, written as process.
