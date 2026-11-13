@@ -14,6 +14,8 @@ let metroFeatures = [];
 let lastRecommendationPoint;
 let recommendationLayer = L.layerGroup().addTo(map);
 
+// MANAGEMENT: Add or edit user-facing text in both language objects.
+// The language button and every data-driven label use these translation keys.
 const translations = {
   en: {
     title: 'Montreal Elderly Community and Recreation Centers / Places',
@@ -349,6 +351,7 @@ function applyLanguage() {
   }
 }
 
+// MANAGEMENT: Translation button behavior. Re-render map labels and popups after switching.
 function setupLanguageToggle() {
   const button = document.getElementById('language-toggle');
   if (!button) {
@@ -438,6 +441,7 @@ let weatherRequestTimer;
 let weatherPopup;
 let weatherLoadingPopup;
 const weatherPopupMinimumZoom = 12;
+// MANAGEMENT: Change weather classifications here; assessWeather uses these thresholds.
 const weatherThresholds = {
   extremeCold: -15,
   extremeHeat: 35,
@@ -706,6 +710,7 @@ let placeCategories;
 let placesData;
 let boroughLayer;
 let boroughDensity = {};
+// MANAGEMENT: These visibility flags control the legend toggles below.
 let boroughDensityVisible = true;
 let metroLayer;
 let metroLayerVisible = true;
@@ -717,6 +722,7 @@ const center = document.getElementById('center');
 center.textContent = 'Hello from JavaScript';
 center.style.background = '#DCBD23';
 
+// MANAGEMENT: Change the marker color for each place data layer here.
 const categoryColors = {
   'Parks and gardens': '#32d515aa',
   'Sports and recreation': '#e27f39',
@@ -1179,6 +1185,8 @@ function formatHoursTable(hours) {
     '<tbody>' + rows + '</tbody></table></details>';
 }
 
+// MANAGEMENT: Place-layer filtering happens here. Update the filter callback to
+// change which features appear after a borough or search selection.
 function renderPlaceLayers() {
   if (!placesData || !placeCategories) {
     return;
@@ -1333,6 +1341,7 @@ function setupBoroughFilter() {
   });
 }
 
+// MANAGEMENT: Connects the HTML data-category checkboxes to their Leaflet layers.
 function setupInstallationFilters() {
   document.querySelectorAll('[data-category]').forEach(function (checkbox) {
     checkbox.addEventListener('change', function (event) {
@@ -1348,7 +1357,8 @@ function setupInstallationFilters() {
   });
 }
 
-// MONTREAL BOROUGH BOUNDARIES: basemap and zoom targets
+// MANAGEMENT / DATA LAYER: Montreal borough boundaries, density shading, and zoom targets.
+// Change the GeoJSON filename here if the boundary source changes.
 fetch(dataRoot + 'mtl_bound.geojson')
   .then(function (response) {
     if (!response.ok) {
@@ -1407,10 +1417,11 @@ fetch(dataRoot + 'mtl_bound.geojson')
     console.error(err);
   });
 
-// Display all features in the GeoJSON file.
+// MANAGEMENT / DATA LAYERS: Transit source files and display limit.
+// Change LIMIT to cap features, or update the filenames in the Promise.all below.
 const LIMIT = Infinity;
 
-// Reusable colors for feature categories.
+// MANAGEMENT: Legend labels and colors for transit/place categories.
 const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d', 'Metro Stations': '#f59e0b' };
 
 const legend = L.control({ position: 'bottomright' });
@@ -1477,7 +1488,7 @@ legend.addTo(map);
 
 
 
-// STOPS DATA: shows all MTL bus stop locations
+// MANAGEMENT / DATA LAYER: Bus stops, route points, and metro station sources.
 // Request the stops GeoJSON and route-point CSV from the repository root.
 Promise.all([
   fetch(dataRoot + 'stops_clean_output.geojson'),
@@ -1537,7 +1548,7 @@ Promise.all([
       features: stopsData.features.slice(0, LIMIT)
     };
 
-    // Convert the STOPS GeoJSON features into a Leaflet layer.
+    // DATA LAYER: Change stop marker appearance or popup fields in this block.
     const stopsLayer = L.geoJSON(shown, {
       // Draw each stop as a small circle instead of a default map pin.
       pointToLayer: function (feature, latlng) {
@@ -1564,6 +1575,7 @@ Promise.all([
 
     stopsLayer.addTo(map);
 
+    // DATA LAYER: Metro station styling and popup fields.
     metroLayer = L.geoJSON({
       type: 'FeatureCollection',
       features: metroFeatures
@@ -1599,7 +1611,7 @@ Promise.all([
         ' stops and ' + metroFeatures.length + ' metro stations shown';
     }
 
-    // Build the transit route layer from the second dataset.
+    // DATA LAYER: Build transit route lines from the shapes.csv point data.
     const grouped = {};
 
     shapesData.features.forEach(function (feature) {
@@ -1670,7 +1682,8 @@ Promise.all([
   });
 
 //-------------------------------------------
-// MONTREAL PLACES DATA: shows POI in Montreal
+// MANAGEMENT / DATA LAYER: Montreal places and installation-type layers.
+// Update the source filename, place properties, or placeCategories mapping here.
 
 fetch(dataRoot + 'mtl_places_clean_output.geojson')
   .then(function (response) {

@@ -7,9 +7,11 @@
   <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.css">
   <link rel="stylesheet" href="vendor/markercluster/MarkerCluster.Default.css">
+  <!-- MANAGEMENT: Update the version query when style.css changes so browsers reload it. -->
   <link rel="stylesheet" href="style.css?v=metro-toggle-20261113">
 </head>
 <body>
+  <!-- MANAGEMENT: Translation control. The click behavior is wired in app.js. -->
   <div class="language-control">
     <button id="language-toggle" type="button" aria-label="Switch to French">
       FR
@@ -35,6 +37,8 @@
         <datalist id="place-suggestions"></datalist>
         <p id="place-count" aria-live="polite"></p>
       </div>
+      <!-- MANAGEMENT: Map filters. Add or remove data-category checkboxes here,
+           then use the same category name in app.js placeCategories. -->
       <section class="filter-panel" aria-labelledby="filter-heading">
         <h2 id="filter-heading" data-i18n="filterHeading">Map filters</h2>
         <div class="borough-control">
@@ -82,8 +86,10 @@
     <aside id="nearest-recommendations" class="nearest-recommendations"
       aria-live="polite" hidden></aside>
   </div>
+  <!-- MANAGEMENT: Keep vendor scripts before app.js; app.js depends on Leaflet. -->
   <script src="vendor/leaflet/leaflet.js"></script>
     <script src="vendor/markercluster/leaflet.markercluster.js"></script>
+    <!-- MANAGEMENT: Update the version query when app.js changes. -->
     <script src="app.js?v=metro-toggle-20261113"></script>
 </body>
 </html>
