@@ -607,7 +607,7 @@ function colourFor(value) {
   if (value >= 50)  return '#a94442';
   if (value >= 20)  return '#cc7a7a';
   if (value > 0)    return '#e6b8b8';
-  return '#f2dede';
+  return '#d3d3d3';
 }
 
 function demoColourFor(value) {
