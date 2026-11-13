@@ -62,15 +62,14 @@ const translations = {
     switchToEnglish: 'Switch to English',
     boroughDensity: 'Community centres per borough'
     ,
-    nearestOptions: 'Nearest emergency options',
+    nearestOptions: 'Nearest Options',
     busStop: 'Bus stop',
     metroStation: 'Metro station',
     communityCentre: 'Community centre',
     park: 'Park',
     distance: 'Distance',
-    nearestButton: 'For nearest options',
-    closeNearestOptions: 'Close nearest options',
-    weatherButton: 'For weather conditions',
+    nearestButton: 'For Nearest options',
+    weatherButton: 'For wWather conditions',
     googleMapsButton: 'Get Directions'
   },
   fr: {
@@ -127,7 +126,6 @@ const translations = {
     park: 'Parc',
     distance: 'Distance',
     nearestButton: 'Pour les options les plus proches',
-    closeNearestOptions: 'Fermer les options les plus proches',
     weatherButton: 'Pour les conditions météorologiques',
     googleMapsButton: 'Obtenir l’itinéraire'
   }
@@ -304,18 +302,12 @@ function updateNearestRecommendations(latlng, targetPanel) {
 
     const panel = targetPanel || document.getElementById('nearest-recommendations');
     if (panel) {
-      panel.innerHTML = (targetPanel ? '' :
-        '<div class="nearest-header"><h2>' + translate('nearestOptions') +
-        '</h2><button type="button" class="nearest-close-button" aria-label="' +
-        translate('closeNearestOptions') + '">&times;</button></div>') +
+      panel.innerHTML = (targetPanel ? '' : '<h2>' + translate('nearestOptions') + '</h2>') +
         '<div>' + translate('distance') + ': ' +
         (currentLanguage === 'fr' ? 'distance à vol d’oiseau' : 'straight-line estimate') +
         '</div><ul>' + list + '</ul>';
       if (!targetPanel) {
         panel.hidden = false;
-        const closeButton = panel.querySelector('.nearest-close-button');
-        L.DomEvent.disableClickPropagation(closeButton);
-        closeButton.addEventListener('click', hideNearestRecommendations);
       }
     }
   }
@@ -698,6 +690,8 @@ let placesData;
 let boroughLayer;
 let boroughDensity = {};
 let boroughDensityVisible = true;
+let metroLayer;
+let metroLayerVisible = true;
 let placeSearchTerm = '';
 let selectedPlaceFeature = null;
 
@@ -758,6 +752,18 @@ function updateBoroughLayerVisibility() {
     boroughLayer.addTo(map);
   } else {
     map.removeLayer(boroughLayer);
+  }
+}
+
+function updateMetroLayerVisibility() {
+  if (!metroLayer) {
+    return;
+  }
+
+  if (metroLayerVisible) {
+    metroLayer.addTo(map);
+  } else {
+    map.removeLayer(metroLayer);
   }
 }
 
@@ -1235,7 +1241,6 @@ function renderPlaceLayers() {
             if (!expanded) {
               updateNearestRecommendations(layer.getLatLng(), details);
             }
-            updateNearestRecommendations(layer.getLatLng());
           });
           button.setAttribute('aria-expanded', 'false');
           L.DomEvent.disableClickPropagation(weatherButton);
@@ -1405,7 +1410,9 @@ legend.onAdd = function () {
     ' Transit Bus Stops': currentLanguage === 'fr' ? 'Arrêts d’autobus' : 'Transit Bus Stops',
     'Metro Stations': currentLanguage === 'fr' ? 'Stations de métro' : 'Metro Stations'
   };
-  const categoryItems = Object.keys(colours).map(function (k) {
+  const categoryItems = Object.keys(colours).filter(function (k) {
+    return k !== 'Metro Stations';
+  }).map(function (k) {
     return '<span style="background:' + colours[k] + '"></span>' + categoryLabels[k];
   }).join('<br>');
   const densityRows = [
@@ -1429,12 +1436,22 @@ legend.onAdd = function () {
       : 'Community centres per borough') + '</strong>' +
     '</label><br>' +
     densityItems +
+    '<br><label class="legend-toggle">' +
+    '<input type="checkbox" id="metro-layer-toggle"' +
+    (metroLayerVisible ? ' checked' : '') + '>' +
+    '<span style="background:' + colours['Metro Stations'] + '"></span>' +
+    (currentLanguage === 'fr' ? 'Stations de métro' : 'Metro Stations') +
+    '</label>' +
     '<br><strong>' + (currentLanguage === 'fr' ? 'Catégories de la carte' : 'Map categories') + '</strong><br>' +
     categoryItems;
   L.DomEvent.disableClickPropagation(div);
   div.querySelector('#borough-density-toggle').addEventListener('change', function (event) {
     boroughDensityVisible = event.target.checked;
     updateBoroughLayerVisibility();
+  });
+  div.querySelector('#metro-layer-toggle').addEventListener('change', function (event) {
+    metroLayerVisible = event.target.checked;
+    updateMetroLayerVisibility();
   });
   return div;
 };
@@ -1530,7 +1547,7 @@ Promise.all([
 
     stopsLayer.addTo(map);
 
-    const metroLayer = L.geoJSON({
+    metroLayer = L.geoJSON({
       type: 'FeatureCollection',
       features: metroFeatures
     }, {
@@ -1556,7 +1573,7 @@ Promise.all([
         );
       }
     });
-    metroLayer.addTo(map);
+    updateMetroLayerVisibility();
 
     // Report how many features were displayed.
     if (!dataLoadError) {
