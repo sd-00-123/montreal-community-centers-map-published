@@ -61,6 +61,7 @@ const translations = {
     nearestOptions: 'Nearest emergency options',
     busStop: 'Bus stop',
     communityCentre: 'Community centre',
+    park: 'Park',
     distance: 'Distance',
     nearestButton: 'For nearest options',
     weatherButton: 'For weather conditions',
@@ -113,6 +114,7 @@ const translations = {
     nearestOptions: 'Options d’urgence les plus proches',
     busStop: 'Arrêt d’autobus',
     communityCentre: 'Centre communautaire',
+    park: 'Parc',
     distance: 'Distance',
     nearestButton: 'Pour les options les plus proches',
     weatherButton: 'Pour les conditions météorologiques',
@@ -146,6 +148,16 @@ function formatDistance(metres) {
       ? Math.round(metres) + ' m'
       : (metres / 1000).toFixed(2) + ' km';
   }
+
+function bearingBetween(from, to) {
+  const latitude1 = from.lat * Math.PI / 180;
+  const latitude2 = to.lat * Math.PI / 180;
+  const deltaLongitude = (to.lng - from.lng) * Math.PI / 180;
+  const y = Math.sin(deltaLongitude) * Math.cos(latitude2);
+  const x = Math.cos(latitude1) * Math.sin(latitude2) -
+    Math.sin(latitude1) * Math.cos(latitude2) * Math.cos(deltaLongitude);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
 
 function updateNearestRecommendations(latlng, targetPanel) {
     lastRecommendationPoint = latlng;
@@ -194,11 +206,65 @@ function updateNearestRecommendations(latlng, targetPanel) {
       destinations.push(indoor);
     }
 
+    const park = placesData.features.filter(function (feature) {
+      return feature.properties.types === 'Parks and gardens';
+    }).map(function (feature) {
+      const lat = Number(feature.geometry.coordinates[1]);
+      const lng = Number(feature.geometry.coordinates[0]);
+      return {
+        feature: feature,
+        latlng: L.latLng(lat, lng),
+        distance: distanceInMetres(latlng, { lat: lat, lng: lng }),
+        label: feature.properties.titre_lieu || translate('park'),
+        type: translate('park'),
+        colour: '#16803c'
+      };
+    }).sort(function (a, b) {
+      return a.distance - b.distance;
+    })[0];
+
+    if (park) {
+      destinations.push(park);
+    }
+
     const list = destinations.map(function (destination) {
       recommendationLayer.addLayer(L.polyline(
         [latlng, destination.latlng],
         { color: destination.colour, weight: 3, opacity: 0.8 }
       ));
+      const arrowAngle = bearingBetween(latlng, destination.latlng);
+      const arrowPoint = L.latLng(
+        (latlng.lat + destination.latlng.lat) / 2,
+        (latlng.lng + destination.latlng.lng) / 2
+      );
+      recommendationLayer.addLayer(L.marker(arrowPoint, {
+        icon: L.divIcon({
+          className: 'recommendation-arrow',
+          html: '<span style="color:' + destination.colour +
+            '; transform:rotate(' + (arrowAngle - 90) + 'deg)">&#9654;</span>',
+          iconSize: [16, 16],
+          iconAnchor: [8, 8]
+        }),
+        interactive: false
+      }));
+      const destinationMarker = L.circleMarker(destination.latlng, {
+        radius: 9,
+        color: destination.colour,
+        fillColor: destination.colour,
+        fillOpacity: 0.85,
+        weight: 3
+      });
+      const destinationProperties = destination.feature.properties || {};
+      destinationMarker.bindPopup(
+        '<strong>' + escapeHtml(destination.label) + '</strong><br>' +
+        escapeHtml(destination.type) +
+        (destinationProperties.arrondissements
+          ? '<br>' + translate('borough') + ': ' +
+            escapeHtml(destinationProperties.arrondissements)
+          : ''),
+        { closeButton: true }
+      );
+      recommendationLayer.addLayer(destinationMarker);
       return '<li><span class="recommendation-line" style="border-color:' +
         destination.colour + '"></span><strong>' +
         escapeHtml(destination.type) + ':</strong> ' +

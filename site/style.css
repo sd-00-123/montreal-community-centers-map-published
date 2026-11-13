@@ -74,6 +74,17 @@ h1, h2 { color: var(--accent); }
   margin-right: 5px;
   width: 18px;
 }
+.recommendation-arrow {
+  background: transparent;
+  border: 0;
+  font-size: 16px;
+  line-height: 16px;
+  text-align: center;
+}
+.recommendation-arrow span {
+  display: block;
+  transform-origin: center;
+}
 .nearest-options-button {
   background: #1F2D5A;
   border: 0;
