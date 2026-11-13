@@ -211,7 +211,7 @@ function updateNearestRecommendations(latlng, targetPanel) {
         distance: distanceInMetres(latlng, { lat: lat, lng: lng }),
         label: feature.properties.station || translate('metroStation'),
         type: translate('metroStation'),
-        colour: '#f59e0b'
+        colour: '#693022'
       };
     }).sort(function (a, b) {
       return a.distance - b.distance;
