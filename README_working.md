@@ -4,8 +4,10 @@
 page
 https://sd-00-123.github.io/montreal-community-centers-map-published/
 
+https://sd-00-123.github.io/montreal-community-centers-map-published/site
+
 Site URL
-https://sd-00-123.github.io/montreal-community-centers-map-published/site/
+https://sd-00-123.github.io/montreal-community-centers-map-published/site/?v=accessibility-panel-20261113
 
 
 Features Added: A3
@@ -185,6 +187,6 @@ git push
 --------------------------------
 Tailored message:
 git status
-git add README_working.md
-git commit -m "Udpate changes to file"
+git add site README_working.md MetroStops/MetroStops.geojson
+git commit -m "Update map files"
 git push
