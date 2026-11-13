@@ -581,6 +581,7 @@ let placeCategories;
 let placesData;
 let boroughLayer;
 let boroughDensity = {};
+let boroughDensityVisible = true;
 let placeSearchTerm = '';
 
 // Update the page with a small JavaScript demonstration.
@@ -628,6 +629,18 @@ function updateBoroughStyles() {
         fillOpacity: 0.90
       };
     });
+  }
+}
+
+function updateBoroughLayerVisibility() {
+  if (!boroughLayer) {
+    return;
+  }
+
+  if (boroughDensityVisible) {
+    boroughLayer.addTo(map);
+  } else {
+    map.removeLayer(boroughLayer);
   }
 }
 
@@ -1007,7 +1020,7 @@ fetch(dataRoot + 'mtl_bound.geojson')
       }
     });
 
-    boroughLayer.addTo(map);
+    updateBoroughLayerVisibility();
 
     setupBoroughFilter();
   })
@@ -1021,16 +1034,16 @@ fetch(dataRoot + 'mtl_bound.geojson')
 const LIMIT = Infinity;
 
 // Reusable colors for feature categories.
-const colours = { 'Arts, Culture and Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d' };
+const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Transit Bus Lines': '#c7a079', ' Transit Bus Stops': '#82816f2d' };
 
 const legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function () {
   const div = L.DomUtil.create('div', 'legend');
   const categoryLabels = {
-    'Arts, Culture and Community Centers': currentLanguage === 'fr'
-      ? 'Centres communautaires, culture et arts'
-      : 'Arts, Culture and Community Centers',
+    'Community Centers': currentLanguage === 'fr'
+      ? 'Centres communautaires'
+      : 'Community Centers',
     'Parks and gardens': translate('parks'),
     'Sports and recreation': translate('sports'),
     'Transit Bus Lines': currentLanguage === 'fr' ? 'Lignes d’autobus' : 'Transit Bus Lines',
@@ -1052,12 +1065,21 @@ legend.onAdd = function () {
   }).join('<br>');
 
   div.innerHTML =
+    '<label class="legend-toggle">' +
+    '<input type="checkbox" id="borough-density-toggle"' +
+    (boroughDensityVisible ? ' checked' : '') + '>' +
     '<strong>' + (currentLanguage === 'fr'
       ? 'Centres communautaires par arrondissement'
-      : 'Community centres per borough') + '</strong><br>' +
+      : 'Community centres per borough') + '</strong>' +
+    '</label><br>' +
     densityItems +
     '<br><strong>' + (currentLanguage === 'fr' ? 'Catégories de la carte' : 'Map categories') + '</strong><br>' +
     categoryItems;
+  L.DomEvent.disableClickPropagation(div);
+  div.querySelector('#borough-density-toggle').addEventListener('change', function (event) {
+    boroughDensityVisible = event.target.checked;
+    updateBoroughLayerVisibility();
+  });
   return div;
 };
 

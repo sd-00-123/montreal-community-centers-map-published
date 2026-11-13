@@ -6,6 +6,8 @@ header p { margin: 4px 0 0; font-size: 14px; color: #DCBD23; }
 #map { height: calc(100vh - 62px); }
 .legend { background: #fff; padding: 6px 10px; border-radius: 6px; line-height: 1.6; font-size: 13px; }
 .legend span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+.legend-toggle { cursor: pointer; }
+.legend-toggle input { margin: 0 6px 0 0; }
 
 
 
