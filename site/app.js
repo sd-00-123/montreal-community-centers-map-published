@@ -763,10 +763,19 @@ center.textContent = 'Hello there, I hope you enjoy using this map';
 center.style.background = '#c9c8c5';
 
 // MANAGEMENT: Change the marker color for each place data layer here.
-const categoryColors = {
+const colours = {
+  'Community Centers': '#800020',
   'Parks and gardens': '#32d515aa',
   'Sports and recreation': '#e27f39',
-  'Comminity centers': '#800020'
+  'Metro Stations': '#89b1bd',
+  'Transit Bus Lines': '#a6998c',
+  ' Transit Bus Stops': '#82816f2d'
+};
+
+const categoryColors = {
+  'Parks and gardens': colours['Parks and gardens'],
+  'Sports and recreation': colours['Sports and recreation'],
+  'Arts, culture and community': colours['Community Centers']
 };
 
   
@@ -1463,9 +1472,6 @@ fetch(dataRoot + 'mtl_bound.geojson')
 // Change LIMIT to cap features, or update the filenames in the Promise.all below.
 const LIMIT = Infinity;
 
-// MANAGEMENT: Legend labels and colors for transit/place categories.
-const colours = { 'Community Centers': '#800020',  'Parks and gardens': '#32d515aa', 'Sports and recreation': '#e27f39', 'Metro Stations': '#89b1bd', 'Transit Bus Lines': '#a6998c', ' Transit Bus Stops': '#82816f2d', };
-
 const legend = L.control({ position: 'bottomright' });
 
 legend.onAdd = function () {
@@ -1595,12 +1601,12 @@ Promise.all([
       // Draw each stop as a small circle instead of a default map pin.
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
-          color: '#82816f2d',
+          color: colours[' Transit Bus Stops'],
           radius: 1,
           fillOpacity: 0.5,
           weight: 1,
           // Use a category color when available; otherwise use gray.
-          fillColor: '#82816f2d',
+          fillColor: colours[' Transit Bus Stops'],
         });
       },
       // Add a popup using properties stored in each GeoJSON feature.
@@ -1624,9 +1630,9 @@ Promise.all([
     }, {
       pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, {
-          color: '#d3b8d4',
+          color: colours['Metro Stations'],
           radius: 5,
-          fillColor: '#d3b8d4',
+          fillColor: colours['Metro Stations'],
           fillOpacity: 0.9,
           weight: 1
         });
@@ -1693,7 +1699,7 @@ Promise.all([
     }, {
       style: function () {
         return {
-          color: '#c7a079',
+          color: colours['Transit Bus Lines'],
           weight: 0.3,
           opacity: 0.5
         };
