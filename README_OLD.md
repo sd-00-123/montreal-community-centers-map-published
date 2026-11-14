@@ -1,0 +1,90 @@
+# montreal-community-centers-map-published
+Montreal elderly community and recreation centers map
+
+page
+https://sd-00-123.github.io/montreal-community-centers-map-published/
+
+Site URL
+https://sd-00-123.github.io/montreal-community-centers-map-published/site/
+
+## A3 feature: [a live button/feature]
+For A3 I will add a live feature using open source api, so that my user can know the weather conditions on real time on any point htey click on the map.
+It has depth because it (computes / responds / brings in) complementry data that would be useful for the user.
+I will know it works when my pop up of weather data is on my map after I clicked any random point in Montreal.
+My edge case is data allows live weather pop up so long as it does not break the console..
+
+Test 1. I [click any point on the map].
+  Expected: [see live weather data on the point the user clicked].
+Passed; a weather pop up appeared in 3 seconds after a click event.
+
+Test 2. I [click on an actual data point on the map].
+    Expected: [see live weather data for the clicked data point].
+Passed: I see the live weather pop up on an actually data point.
+
+Test 3. I [the user clickes outide of Montreal].
+  Expected: [show a message that weather is available only on Montreal Island, without calling the weather API.]
+Passed: a message appeared and no weather API request was made.
+-------------------------------------------
+
+Another Feature Test: TO BE TESTED
+From Extra earthquake module warm up
+For A3 I will add a search feature, so that my reader can search community centers nearedt to them. and finds the three closest to them
+It has depth because it (computes / responds / brings in) answers the user is looking for.
+I will know it works when searching centers / centres works in the serach box.
+My edge case is search comes up emtpy.
+
+Test 1. I [search community centers/res in search box].
+  Expected: [exactly what appears or changes].
+Test 2. I [click on community centers or anywhere on the map].
+  Expected: [returns nothing or points to three nearest things that the user typed in the search box]
+Test 3. I [the user types in a typo].
+  Expected: [no "searched thing" was found; no console error].
+------------------------------------------
+Other ideas:
+1. Have an addition feature that saves a location a user wants with "add to my saved places" similar to google maps
+
+2. Have a open souce portion for users to input other unknown locations or update pop up info ONLY
+sort of like a editable front end page?
+
+--------------------------------
+Tailored message:
+git status
+git add README.md
+git commit -m "updated A3"
+git push
+
+
+
+-----------------
+
+## Pre-flight report (Lab 7)
+| Check | Result | What I did |
+| --- | --- | --- |
+
+| 1. Cold start 
+| PASSED | ran console - no red error | "nothing to commit working tree clean" |
+
+| 2. Read every label 
+| PASSED | checked data points | No incorrectly named label with undefined. 
+Not availble data is written in po up or in a sentence |
+
+| 3. Ask twice 
+| PASSED | Clicked random point on the map and then another right after | Prevous pop up data closes when a new click occurs|
+
+| 4. The edge 
+| PASSED | No console break or red error for edge case | This was fixed with lab 7 test case 3 re-run checks|
+
+| 5. The data does not come | PASSED | blocked data request shows a visible message that the map data did not load |
+
+| 6. On a phone (size view and my phone) 
+| PASSED | opened the webpage on my phone | no cut letters or sentences on the webpage |
+
+| 7. Mouse in my pocket 
+| PASSED | Ran tab on my git pages stie | All my tabs pass as buttons and fuction as buttons |
+
+| 8. Accessibility audit 
+| PASSED | Ran accessability and lighthouse feature | Shows accesbility 100, no red errors.
+
+
+
+
