@@ -45,4 +45,9 @@ git add README.md
 git commit -m "Update"
 git push
 
+git status
+git add remember.js
+git commit -m "new file to remember added places to map"
+git push
+
 
