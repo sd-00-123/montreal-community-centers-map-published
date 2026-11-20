@@ -41,7 +41,7 @@ On thing I don't fuly understand is after asking for htis change. I don't know w
 --------------------------------
 
 git status
-git add README_working.md
+git add README.md
 git commit -m "Update"
 git push
 
