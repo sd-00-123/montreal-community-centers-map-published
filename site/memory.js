@@ -23,7 +23,7 @@ const MEMORY = {
     seen:    { label: "poor weather conditions",       colour: "#d95f02" },
     problem: { label: "road / transit route blocked",    colour: "#dad665" },
     idea:    { label: "safe route",    colour: "#5262de" },
-    favorites: { label: "places I like",    colour: "#1b9e77" 
+    favorites: { label: "my places",    colour: "#1b9e77" 
      }
   },
   maxNote: 80,                       // characters
