@@ -46,7 +46,7 @@ git commit -m "Update"
 git push
 
 git status
-git add site/index.html
+git add site/app.js
 git commit -m "update"
 git push
 
