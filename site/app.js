@@ -47,7 +47,7 @@ const translations = {
     website: 'Website',
     moreInformation: 'More information',
     weatherOnlyMontreal: 'Weather is available only on Montreal Island.',
-    weatherLoading: 'Weather will load in 3 seconds...',
+    // weatherLoading: 'Weather will load in 3 seconds...',
     weatherAt: 'Weather at',
     good: 'Good',
     caution: 'Caution',
@@ -270,7 +270,7 @@ const recommendationPoints = [latlng].concat(
 
 map.fitBounds(L.latLngBounds(recommendationPoints), {
   padding: [64, 64],
-  maxZoom: 12
+  maxZoom: 15
 });
 
     const list = destinations.map(function (destination) {
