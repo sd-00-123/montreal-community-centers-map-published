@@ -40,7 +40,7 @@ My map remembers the "favorites" route, where a user can save places and these p
 
 git status
 git add README_A3Updated.md
-git commit -m "Update"
+git commit -m "remember lab Update"
 git push
 
 git status
