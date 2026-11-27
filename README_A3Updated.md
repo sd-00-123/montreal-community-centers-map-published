@@ -1,8 +1,6 @@
 page
 https://sd-00-123.github.io/montreal-community-centers-map-published/
 
-https://sd-00-123.github.io/montreal-community-centers-map-published/site
-
 Site URL
 https://sd-00-123.github.io/montreal-community-centers-map-published/site/?v=accessibility-panel-20261113
 
@@ -36,7 +34,8 @@ AI DISCLOSURE: A3 M8
 Most of my post testing fixes were done using the git educaiton AI. For example, I didn't know how to make a toggle eature for my community centers per borough density layer, so I tell the AI the make a toggle feature on the legend just for this layer. This change was in app.js at lines 1495 to 1509 as well as 809 to 819 for layer added to map if I am not mistaken. 
 On thing I don't fuly understand is after asking for htis change. I don't know why the layer doesn't stay underneath the community centers data layer. I tried to locate the layer in app.js but didn't change or switch layers since I didn't fully know where the code starts and ends / how to trasition the layer properly. 
 
-
+What my map remebers:
+My map remembers the "favorites" route, where a user can save places and these points survives the refresh page. I also added the reset view on my map from lab 9. These 2 changes are B3 and B2 respectively in the lab 9 handout. 
 
 --------------------------------
 
