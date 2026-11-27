@@ -47,6 +47,22 @@ h1, h2 { color: var(--accent); }
   background: var(--accent);
   color: #fff;
 }
+.map-wrap {
+  min-width: 0;
+  position: relative;
+}
+
+.nearest-recommendations {
+  /* Keep the existing background, border, shadow, padding, and z-index. */
+  box-sizing: border-box;
+  left: 50%;
+  margin: 0;
+  max-width: 360px;
+  right: auto;
+  top: 16px;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+}
 /* MANAGEMENT: The filter checkboxes and legend layer toggles use these styles. */
 .nearest-recommendations {
   align-self: start;
@@ -94,7 +110,7 @@ h1, h2 { color: var(--accent); }
   margin: 4px 0;
 }
 .nearest-recommendations .recommendation-line {
-  border-bottom: 3px solid;
+  border-bottom: 5px solid;
   display: inline-block;
   margin-right: 5px;
   width: 15px;
