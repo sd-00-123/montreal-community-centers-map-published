@@ -262,6 +262,16 @@ function updateNearestRecommendations(latlng, targetPanel) {
     if (park) {
       destinations.push(park);
     }
+const recommendationPoints = [latlng].concat(
+  destinations.map(function (destination) {
+    return destination.latlng;
+  })
+);
+
+map.fitBounds(L.latLngBounds(recommendationPoints), {
+  padding: [64, 64],
+  maxZoom: 12
+});
 
     const list = destinations.map(function (destination) {
       recommendationLayer.addLayer(L.polyline(
