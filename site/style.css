@@ -98,8 +98,8 @@ h1, h2 { color: var(--accent); }
 .recommendation-arrow {
   background: transparent;
   border: 0;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 10px;
+  line-height: 10px;
   text-align: center;
 }
 .recommendation-arrow span {
@@ -168,7 +168,7 @@ h1, h2 { color: var(--accent); }
   grid-template-columns: 1fr 2fr;   /* story column, then a wider map */
   gap: 24px;
 }
-@media (max-width: 800px) {
+@media (max-width: 700px) {
   .page { grid-template-columns: 1fr; }   /* one column on a phone */
 }
 
