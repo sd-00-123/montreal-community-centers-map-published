@@ -44,8 +44,8 @@ git commit -m "lab 10 Update"
 git push
 
 git status
-git add site/style.css
-git commit -m "update nereast "
+git add site/app.js
+git commit -m "update max zoom"
 git push
 
 
