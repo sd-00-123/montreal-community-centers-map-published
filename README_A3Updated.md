@@ -41,13 +41,13 @@ On thing I don't fuly understand is after asking for htis change. I don't know w
 --------------------------------
 
 git status
-git add README.md
+git add README_A3Updated.md
 git commit -m "Update"
 git push
 
 git status
-git add remember.js
-git commit -m "new file to remember added places to map"
+git add site/index.html
+git commit -m "update"
 git push
 
 
