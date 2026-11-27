@@ -31,8 +31,7 @@ I fixed that this morning as well befrore the lab.
 I did about 5 fixes from their suggestions from small and big. 
 
 AI DISCLOSURE: A3 M8 
-Most of my post testing fixes were done using the git educaiton AI. For example, I didn't know how to make a toggle eature for my community centers per borough density layer, so I tell the AI the make a toggle feature on the legend just for this layer. This change was in app.js at lines 1495 to 1509 as well as 809 to 819 for layer added to map if I am not mistaken. 
-On thing I don't fuly understand is after asking for htis change. I don't know why the layer doesn't stay underneath the community centers data layer. I tried to locate the layer in app.js but didn't change or switch layers since I didn't fully know where the code starts and ends / how to trasition the layer properly. 
+I did not use my AI copilot agent for this lab, one partly because I did not have anough working credits left, but also because the instructions were clear on the handout page itself, I didn't end up running into any issues.  
 
 What my map remebers:
 My map remembers the "favorites" route, where a user can save places and these points survives the refresh page. I also added the reset view on my map from lab 9. These 2 changes are B3 and B2 respectively in the lab 9 handout. 
