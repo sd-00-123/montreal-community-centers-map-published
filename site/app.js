@@ -1250,7 +1250,7 @@ function renderPlaceLayers() {
 
   Object.keys(placeCategories).forEach(function (category) {
     placeCategories[category].clearLayers();
-    const categoryLayer = L.geoJSON(placesData, {
+    const categoryLayer = L.geoJSON(placesData, {   
       filter: function (feature) {
         return feature.properties.types === category &&
           featureBelongsToBorough(feature, selectedBorough) &&
