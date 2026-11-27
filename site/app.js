@@ -454,38 +454,38 @@ const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 streets.addTo(map);
 
 // Request current weather for Concordia's Hall Building when the map loads.
-const hallBuilding = {
-  name: 'Concordia, Hall building',
-  lat: 45.4973,
-  lon: -73.5790
-};
+//const hallBuilding = {
+//  name: 'Concordia, Hall building',
+//  lat: 45.4973,
+//  lon: -73.5790
+//};
 
-const hallWeatherParams = new URLSearchParams({
-  latitude: hallBuilding.lat,
-  longitude: hallBuilding.lon,
-  current: 'temperature_2m,wind_speed_10m'
-});
-const hallWeatherUrl =
-  'https://api.open-meteo.com/v1/forecast?' + hallWeatherParams;
-console.log(hallWeatherUrl);
+//const hallWeatherParams = new URLSearchParams({
+//  latitude: hallBuilding.lat,
+//  longitude: hallBuilding.lon,
+//  current: 'temperature_2m,wind_speed_10m'
+//});
+//const hallWeatherUrl =
+//  'https://api.open-meteo.com/v1/forecast?' + hallWeatherParams;
+//console.log(hallWeatherUrl);
 
-fetch(hallWeatherUrl)
-  .then(function (response) {
-    if (!response.ok) {
-      throw new Error('HTTP ' + response.status);
-    }
+// fetch(hallWeatherUrl)
+//  .then(function (response) {
+//    if (!response.ok) {
+//      throw new Error('HTTP ' + response.status);
+//    }
 
-    return response.json();
-  })
-  .then(function (data) {
-    console.log(
-      'Now at ' + hallBuilding.name + ': ' +
-      data.current.temperature_2m + ' degrees C'
-    );
-  })
-  .catch(function (error) {
-    console.log('Could not get it: ' + error.message);
-  });
+//    return response.json();
+//  })
+//  .then(function (data) {
+//    console.log(
+//      'Now at ' + hallBuilding.name + ': ' +
+//      data.current.temperature_2m + ' degrees C'
+//    );
+//  })
+//  .catch(function (error) {
+//    console.log('Could not get it: ' + error.message);
+ // });
 
 let weatherRequestTimer;
 let weatherPopup;
