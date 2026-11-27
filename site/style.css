@@ -37,11 +37,11 @@ h1, h2 { color: var(--accent); }
   cursor: pointer;
   font-size: 20px;
   padding: 10px 20px;
+}
+#map .leaflet-top.leaflet-right .memory-panel {
+  margin-top: 70px;
+}
 
-  #map .leaflet-top.leaflet-right .memory-panel {
-  margin-top: 74px;
-}
-}
 .language-control button:hover,
 .language-control button:focus {
   background: var(--accent);
