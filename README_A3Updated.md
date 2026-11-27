@@ -44,7 +44,7 @@ git commit -m "remember lab Update"
 git push
 
 git status
-git add site/app.js
+git add memory.js
 git commit -m "update"
 git push
 
